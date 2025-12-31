@@ -1,7 +1,7 @@
 from translator import Translator
 from formats import is_noise
 import argparse
-
+import csv
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Translate Spanish text to English.")
@@ -54,9 +54,13 @@ def main(argv=None):
     result_batch = translator.batch_generate_translation(sentences)
 
     with open ("../outputs/translation_output.csv", "w", encoding="utf-8") as out_file:
+        writer = csv.writer(out_file)
+        writer.writerow(["source", "translation"])
         for original, translated in result_batch:
-            out_file.write(f"{original},{translated}\n")
-    
+            writer.writerow([original, translated])
+
+        
+        
 
 if __name__ == "__main__":
     main()
