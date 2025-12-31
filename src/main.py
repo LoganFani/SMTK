@@ -1,7 +1,7 @@
 from translator import Translator
-from files import TempDirHandler
 from formats import is_noise
 import argparse
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Translate Spanish text to English.")
@@ -18,13 +18,18 @@ def main(argv=None):
             for line in f:
                 print(line)
         return
+    
+    if not args.target_lang or not args.native_lang:
+        print("Please provide both --target_lang and --native_lang arguments.")
+        return
 
     target_lang = args.target_lang
     native_lang = args.native_lang
-    translator = Translator(target_lang=target_lang, native_lang=native_lang)
+    translator = Translator(target_lang=target_lang, native_lang=native_lang, cache_dir="../models")
 
     sentences = []
     if args.input:
+        print("Processing file input...\n")
         with open(args.input, "r", encoding="utf-8") as f:
             for line in f:
                 if not is_noise(line):
@@ -35,6 +40,7 @@ def main(argv=None):
 
         text = input()
 
+        print("\nProcessing pasted input...\n")
         for line in text.splitlines():
             if not is_noise(line):
                 sentences.append(line.strip())
@@ -44,9 +50,10 @@ def main(argv=None):
         return
 
 
+    print("Generating translations...\n")
     result_batch = translator.batch_generate_translation(sentences)
 
-    with open ("translation_output.txt", "w", encoding="utf-8") as out_file:
+    with open ("../outputs/translation_output.csv", "w", encoding="utf-8") as out_file:
         for original, translated in result_batch:
             out_file.write(f"{original},{translated}\n")
     
