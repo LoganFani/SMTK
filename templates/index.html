@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTK</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>SMTK</h1>
+    
+    <div class="toolbar">
+        <div class="file-input-wrapper">
+            <button class="btn btn-file">Upload File (.srt, .txt)</button>
+            <input type="file" id="fileUpload" accept=".srt,.txt">
+        </div>
+
+        <div class="lang-group">
+            <label for="sourceLang">From:</label>
+            <select id="sourceLang">
+                <option value="en">English</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+            </select>
+        </div>
+
+        <div class="lang-group">
+            <label for="targetLang">To:</label>
+            <select id="targetLang">
+                <option value="en">English</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+            </select>
+        </div>
+    </div>
+
+    <textarea id="transcriptInput" placeholder="Paste your transcript here or upload a file..."></textarea>
+
+    <div class="generate-container">
+        <button id="generate-btn" class="btn" onclick="sendData()">Generate Cards</button>
+    </div>
+</div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
