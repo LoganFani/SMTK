@@ -1,6 +1,4 @@
 */__pycache__/
 /env/
-*/.DS_Store
+*.DS_Store
 models/
-
-.DS_Store
