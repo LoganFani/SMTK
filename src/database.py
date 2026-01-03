@@ -1,5 +1,6 @@
 import sqlite3
 
+#TODO CHANGE ALL F STRINGS TO SAFE QUERIES
 
 # Start
 def get_db_connection(db_name:str ) -> sqlite3.Connection | None:
@@ -66,7 +67,7 @@ def delete_translation(conn:sqlite3.Connection, deck_name:str, translation_id:in
     except sqlite3.Error as e:
         print(f"Error deleting translation: {e}")
         return False
-    
+
 def edit_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int, new_source:str, new_translation:str) -> bool:
     try:
         cursor = conn.cursor()
