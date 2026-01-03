@@ -26,6 +26,35 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+/* --- Navigation Tabs Styling --- */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: var(--secondary-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.tab-link:hover {
+    background-color: #f0f0f0;
+    color: var(--text-color);
+}
+
+.tab-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+/* ------------------------------ */
+
 h1 { margin-top: 0; font-weight: 600; color: #2c3e50; }
 
 .toolbar {
@@ -39,7 +68,7 @@ h1 { margin-top: 0; font-weight: 600; color: #2c3e50; }
     border-radius: 8px;
 }
 
-.lang-group {
+.lang-group, .to-decks-btn-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -85,6 +114,13 @@ textarea {
 }
 
 .btn-file { background-color: var(--secondary-color); }
+.btn-manage { 
+    background-color: #e9ecef; 
+    color: var(--text-color); 
+    padding: 6px 12px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+}
 #generate-btn { background-color: var(--success-color); }
 
 .btn:hover { filter: brightness(90%); }
@@ -93,6 +129,7 @@ select {
     padding: 8px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    background: white;
 }
 
 .generate-container {

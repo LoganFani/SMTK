@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTK - Decks</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <nav class="tabs">
+        <a href="/" class="tab-link">Home</a>
+        <a href="/decks" class="tab-link active">Decks</a>
+    </nav>
+
+    <h1>Manage Decks</h1>
+    
+    <div class="toolbar">
+        <div class="lang-group">
+            <label for="newDeckName">New Deck Name:</label>
+            <input type="text" id="newDeckName" placeholder="e.g. Spanish Vocabulary" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <button class="btn" style="background-color: var(--primary-color);" onclick="addDeck()">Create Deck</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+    <div class="deck-list-container">
+        <h3>Your Decks</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 2px solid #eee;">
+                    <th style="padding: 10px;">Deck Name</th>
+                    <th style="padding: 10px;">Card Count</th>
+                    <th style="padding: 10px; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="deckTableBody">
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">Default Deck</td>
+                    <td style="padding: 10px;">12 Cards</td>
+                    <td style="padding: 10px; text-align: right;">
+                        <button class="btn btn-manage" style="background-color: #ff7675; color: white; border: none;">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

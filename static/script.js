@@ -19,8 +19,14 @@ document.getElementById('fileUpload').addEventListener('change', function(e) {
  */
 async function sendData() {
     const transcript = document.getElementById('transcriptInput').value;
+    console.log("Transcript:", transcript);
     const source = document.getElementById('sourceLang').value;
+    console.log("Source Language:", source);
     const target = document.getElementById('targetLang').value;
+    console.log("Target Language:", target);
+
+    const deckElement = document.getElementById('toDeck'); // Get the element first
+    const deckValue = deckElement ? deckElement.value : "default_deck"; // Fallback just in case
 
     if (!transcript.trim()) {
         alert("Please provide some text or upload a file first!");
@@ -30,7 +36,8 @@ async function sendData() {
     const payload = {
         content: transcript,
         target_lang: source,
-        native_lang: target
+        native_lang: target,
+        deck: deckValue
     };
 
     try {
