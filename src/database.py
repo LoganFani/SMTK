@@ -58,10 +58,10 @@ def fetch_all_translations(conn:sqlite3.Connection, deck_name:str) -> list[tuple
 def delete_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int) -> bool:
     try:
         cursor = conn.cursor()
-        cursor.execute(f'''
-            DELETE FROM {deck_name}
+        cursor.execute('''
+            DELETE FROM (deck_name) VALUE (?)
             WHERE id = ?;
-        ''', (translation_id,))
+        ''', (deck_name, translation_id))
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -81,3 +81,16 @@ def edit_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int,
     except sqlite3.Error as e:
         print(f"Error editing translation: {e}")
         return False
+    
+def list_tables(conn:sqlite3.Connection) -> list[str] | None:
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT name FROM sqlite_master
+            WHERE type='table';
+        ''')
+        tables = [row[0] for row in cursor.fetchall()]
+        return tables
+    except sqlite3.Error as e:
+        print(f"Error listing tables: {e}")
+        return None

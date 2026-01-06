@@ -54,6 +54,42 @@ async def generate_translation(request: MineReq):
     return {"translations": [{"id": card[0], "source": card[1], "translation": card[2]} for card in cards]}
 
 
-@app.get("/decks/")
+@app.get("/decks")
 async def decks():
     return FileResponse("../templates/decks.html")
+
+
+@app.post("/decks/create")
+async def create_deck(deck: dict):
+    from database import get_db_connection, create_table
+
+    deck_name = deck.get("deck_name")
+    if not deck_name:
+        return {"error": "Deck name is required."}
+
+    db_connection = get_db_connection("../decks.db")
+    if db_connection is None:
+        return {"error": "Database connection failed."}
+
+    success = create_table(db_connection, deck_name)
+    db_connection.close()
+
+    if success:
+        return {"message": f"Deck '{deck_name}' created successfully."}
+    else:
+        return {"error": "Failed to create deck."}
+    
+
+@app.get("/decks/list")
+async def list_decks():
+    from database import get_db_connection, list_tables
+
+    connection = get_db_connection("../decks.db")
+    if connection is None:
+        return {"error": "Database connection failed."}
+    
+    decks = list_tables(connection)
+    connection.close()
+
+    return {"decks": decks}
+    
