@@ -15,7 +15,7 @@ def create_table (conn:sqlite3.Connection, deck_name:str) -> bool:
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS {deck_name} (
+            CREATE TABLE IF NOT EXISTS "{deck_name}" (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source TEXT NOT NULL,
                 translation TEXT NOT NULL
@@ -27,15 +27,25 @@ def create_table (conn:sqlite3.Connection, deck_name:str) -> bool:
         print(f"Error creating table: {e}")
         return False
 
-
+def delete_table(conn:sqlite3.Connection, deck_name:str) -> bool:
+    try:
+        cursor = conn.cursor()
+        cursor.execute(f'''
+            DROP TABLE IF EXISTS "{deck_name}";
+        ''')
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Error deleting table: {e}")
+        return False
 
 def insert_translation(conn:sqlite3.Connection, deck_name:str, source_text:str, translated_text:str) -> bool:
     try:
         cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO (deck_name, source, translation)
-            VALUES (?, ?, ?);
-        ''', (deck_name, source_text, translated_text))
+        cursor.execute(f'''
+            INSERT INTO "{deck_name}" (source, translation)
+            VALUES (?, ?);
+        ''', (source_text, translated_text))
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -46,9 +56,9 @@ def insert_translation(conn:sqlite3.Connection, deck_name:str, source_text:str, 
 def fetch_all_translations(conn:sqlite3.Connection, deck_name:str) -> list[tuple[int, str, str]] | None:
     try:
         cursor = conn.cursor()
-        cursor.execute('''
-            SELECT * FROM (deck_name) VALUE (?);
-        ''', (deck_name,))
+        cursor.execute(f'''
+            SELECT * FROM "{deck_name}";
+        ''')
         rows = cursor.fetchall()
         return rows
     except sqlite3.Error as e:
@@ -58,10 +68,10 @@ def fetch_all_translations(conn:sqlite3.Connection, deck_name:str) -> list[tuple
 def delete_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int) -> bool:
     try:
         cursor = conn.cursor()
-        cursor.execute('''
-            DELETE FROM (deck_name) VALUE (?)
+        cursor.execute(f'''
+            DELETE FROM "{deck_name}"
             WHERE id = ?;
-        ''', (deck_name, translation_id))
+        ''', (translation_id,))
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -72,7 +82,7 @@ def edit_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int,
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            UPDATE {deck_name}
+            UPDATE "{deck_name}"
             SET source = ?, translation = ?
             WHERE id = ?;
         ''', (new_source, new_translation, translation_id))
@@ -94,3 +104,6 @@ def list_tables(conn:sqlite3.Connection) -> list[str] | None:
     except sqlite3.Error as e:
         print(f"Error listing tables: {e}")
         return None
+    
+conn = get_db_connection("../decks.db")
+delete_table(conn, "test")

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+import time
 
 app = FastAPI()
 
@@ -29,6 +30,7 @@ async def generate_translation(request: MineReq):
     input_lines = request.content.splitlines()
     formatted_lines = format_text(input_lines)
     
+    start_time = time.perf_counter()
     translations = translator.batch_generate_translation(formatted_lines)
 
     db_connection = get_db_connection("../decks.db")
@@ -47,13 +49,15 @@ async def generate_translation(request: MineReq):
 
     cards = fetch_all_translations(db_connection, request.deck)
 
-    print("Fetched Cards:", cards)
-
     db_connection.close()
 
-    return {"translations": [{"id": card[0], "source": card[1], "translation": card[2]} for card in cards]}
+    end_time = time.perf_counter()
 
+    processing_time = end_time - start_time
 
+    return {"status": "success", "processing_time": processing_time}
+
+# --- DECKS ---
 @app.get("/decks")
 async def decks():
     return FileResponse("../templates/decks.html")
@@ -92,4 +96,32 @@ async def list_decks():
     connection.close()
 
     return {"decks": decks}
+
+@app.delete("/decks/delete/{deck_name}")
+async def delete_deck(deck_name: str):
+    from database import get_db_connection, delete_table
+
+    connection = get_db_connection("../decks.db")
+    if connection is None:
+        return {"error": "Database connection failed."}
     
+    success = delete_table(connection, deck_name)
+    connection.close()
+
+    if success:
+        return {"message": f"Deck '{deck_name}' deleted successfully."}
+    else:
+        return {"error": "Failed to delete deck."}
+    
+# --- END DECKS ---
+
+# --- DECK VIEW --- (view/edit specific deck)
+
+# --- GENERATED CARDS --- (cards to be reviewed/edited before adding to deck)
+@app.get("/review")
+async def review_cards():
+    return FileResponse("../templates/review.html")
+
+# --- MODELS --- (manage/download translation models)
+
+# --- OPTIONAL (Settings, pull transcript from websites)
