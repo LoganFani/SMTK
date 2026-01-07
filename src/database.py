@@ -104,6 +104,3 @@ def list_tables(conn:sqlite3.Connection) -> list[str] | None:
     except sqlite3.Error as e:
         print(f"Error listing tables: {e}")
         return None
-    
-conn = get_db_connection("../decks.db")
-delete_table(conn, "test")
