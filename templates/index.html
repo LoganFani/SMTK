@@ -12,6 +12,7 @@
     <nav class="tabs">
         <a href="/" class="tab-link active">Home</a>
         <a href="/decks" class="tab-link">Decks</a>
+        <a href="/models" class="tab-link">Language Models</a>
     </nav>
 
     <h1>SMTK</h1>
@@ -23,31 +24,10 @@
         </div>
 
         <div class="lang-group">
-            <label for="sourceLang">From:</label>
-            <select id="sourceLang">
-                <option value="select">Select Source</option>
-                <option value="en">English</option>
-                <option value="de">German</option>
-                <option value="es">Spanish</option>
+            <label for="modelSelect">Translation Model:</label>
+            <select id="modelSelect" style="padding: 8px; border-radius: 6px; width: 100%;">
+            <option value="">Select</option>
             </select>
-        </div>
-
-        <div class="lang-group">
-            <label for="targetLang">To:</label>
-            <select id="targetLang">
-                <option value="select">Select Target</option>
-                <option value="en">English</option>
-                <option value="de">German</option>
-                <option value="es">Spanish</option>
-            </select>
-        </div>
-
-        <div class="lang-group">
-            <label for="toDeck">Deck:</label>
-            <select id="toDeck">
-                <option value="default_deck">Select Deck</option>
-            </select>
-            <button class="btn btn-small" onclick="window.location.href='/decks'">Manage</button>
         </div>
     </div>
 

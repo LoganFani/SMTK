@@ -1,7 +1,21 @@
-/**
- * Handle File Upload Reading
- * Listens for change on the hidden file input and populates the textarea
- */
+async function loadDownloadedModels() {
+    const dropdown = document.getElementById('modelSelect');
+    const response = await fetch('/models/downloaded');
+    const data = await response.json();
+    
+    dropdown.innerHTML = '';
+    
+    data.downloaded_models.forEach(model => {
+        const opt = document.createElement('option');
+        // value is "Helsinki-NLP/opus-mt-en-es"
+        opt.value = model.repo_id; 
+        // text is "English ➜ Spanish"
+        opt.textContent = model.name; 
+        dropdown.appendChild(opt);
+    });
+}
+
+
 document.getElementById('fileUpload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -19,25 +33,22 @@ document.getElementById('fileUpload').addEventListener('change', function(e) {
  */
 async function sendData() {
     const transcript = document.getElementById('transcriptInput').value;
-    console.log("Transcript:", transcript);
-    const source = document.getElementById('sourceLang').value;
-    console.log("Source Language:", source);
-    const target = document.getElementById('targetLang').value;
-    console.log("Target Language:", target);
-
-    const deckElement = document.getElementById('toDeck'); // Get the element first
-    const deckValue = deckElement ? deckElement.value : "default_deck"; // Fallback just in case
+    const modelId = document.getElementById('modelSelect').value;
 
     if (!transcript.trim()) {
-        alert("Please provide some text or upload a file first!");
+        alert("Please provide text or upload a file first!");
         return;
     }
 
+    // Capture the button to show loading state
+    const btn = document.getElementById('generate-btn');
+    const originalText = btn.textContent;
+    btn.textContent = "Processing...";
+    btn.disabled = true;
+
     const payload = {
         content: transcript,
-        target_lang: source,
-        native_lang: target,
-        deck: deckValue
+        model_id: modelId
     };
 
     try {
@@ -49,13 +60,24 @@ async function sendData() {
 
         if (response.ok) {
             const result = await response.json();
-            console.log("Success:", result);
-            alert("Mining process started successfully!");
+            
+            // 1. Store the translations in sessionStorage
+            sessionStorage.setItem('pendingCards', JSON.stringify(result.translations));
+
+            // 2. Redirect to the review page
+            window.location.href = "/review";
         } else {
             alert("Backend returned an error: " + response.statusText);
         }
     } catch (error) {
         console.error("Connection Error:", error);
-        alert("Could not connect to the Python backend. Make sure it is running on port 8000.");
+        alert("Could not connect to the Python backend.");
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
     }
+
+
 }
+
+document.addEventListener('DOMContentLoaded', loadDownloadedModels);

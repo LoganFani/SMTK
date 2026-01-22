@@ -3,9 +3,9 @@ from transformers import MarianTokenizer, MarianMTModel
 lang_model = "Helsinki-NLP/opus-mt-es-en"
 
 class Translator:
-    def __init__(self, target_lang: str, native_lang: str, cache_dir: str = "models"):
+    def __init__(self, lang_model, cache_dir: str = "models"):
         self.cache_dir = cache_dir
-        self.lang_model = f"Helsinki-NLP/opus-mt-{target_lang}-{native_lang}"
+        self.lang_model = lang_model
         self.tokenizer = MarianTokenizer.from_pretrained(self.lang_model, cache_dir=self.cache_dir)
         self.model = MarianMTModel.from_pretrained(self.lang_model, cache_dir=self.cache_dir)
         

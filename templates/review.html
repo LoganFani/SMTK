@@ -12,6 +12,7 @@
     <nav class="tabs">
         <a href="/" class="tab-link">Home</a>
         <a href="/decks" class="tab-link">Decks</a>
+        <a href="/models" class="tab-link">Language Models</a>
     </nav>
 
     <h1>Review Cards</h1>
@@ -20,8 +21,16 @@
         <div class="lang-group">
             <label for="searchCards">Search Cards:</label>
             <input type="text" id="searchCards" placeholder="Search Keywords" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+            
+            <div class="lang-group">
+                <label for="toDeck">Deck:</label>
+                <select id="toDeck">
+                    <option value="default_deck">Select Deck</option>
+                </select>
+                <button class="btn btn-small" onclick="addCardsToDeck()">Add Cards to Deck</button>
+            </div>
+
         </div>
-        <button class="btn" style="background-color: var(--primary-color);">Search</button>
     </div>
 
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
