@@ -1,7 +1,7 @@
 :root {
     --bg-color: #0d0d0d;
     --surface-color: #151515;      /* Elevated surface */
-    --primary-green: #dce0ff;      /* Terminal Green */
+    --primary-green: #556e96;      /* TESTS: dce0ff,  */
     --text-main: #e0e0e0;
     --text-dim: #666666;
     --border-color: #252525;
@@ -12,7 +12,7 @@ body.light-mode {
     --bg-color: #f5f5f5;
     --surface-color: #ffffff;
     --primary-green: #141414;
-    --text-main: #1a1a1a;
+    --text-main: #1a1a1a;  /*1a1a1a*/
     --text-dim: #666666;
     --border-color: #dddddd;
     --danger: #d63031;
@@ -80,7 +80,7 @@ body {
 input, select, textarea {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
-    color: white;
+    color: var(--text-main);
     padding: 12px;
     border-radius: 4px;
     outline: none;

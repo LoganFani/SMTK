@@ -22,9 +22,9 @@ textarea:focus {
 
 /* Custom Dropdowns */
 select {
-    background: var(--surface-color); /* Will be #151515 in dark, #ffffff in light */
+    background: var(--surface-color); 
     border: 1px solid var(--border-color);
-    color: var(--text-main); /* FIX: This ensures text is white in dark, black in light */
+    color: var(--text-main); 
     padding: 10px;
     border-radius: 4px;
     font-family: 'JetBrains Mono', monospace;
@@ -36,7 +36,7 @@ select option {
     color: var(--text-main);
 }
 
-/* Standard Ghostty Button */
+
 .btn {
     background: transparent;
     color: var(--primary-green);
@@ -131,7 +131,7 @@ select option {
 }
 
 .card-table textarea:focus {
-    background: #000;
+    background: var(--bg-color);
     border-color: var(--primary-green);
     color: var(--primary-green);
     outline: none;

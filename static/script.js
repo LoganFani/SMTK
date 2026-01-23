@@ -15,7 +15,16 @@ async function loadDownloadedModels() {
     });
 }
 
+// Character Count for Transcript Input
+const transcript = document.getElementById('transcriptInput');
+const charCount = document.getElementById('charCount');
 
+transcript.addEventListener('input', () => {
+charCount.innerText = `chars ${transcript.value.length}`;
+})
+
+
+// File Upload Handling
 document.getElementById('fileUpload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
