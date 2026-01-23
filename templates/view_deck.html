@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTK | View Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link">HOME</a>
+            <a href="/decks" class="tab-link active">DECKS</a>
+            <a href="/models" class="tab-link">MODELS</a>
+
+            <button id="themeToggle" class="btn" style="margin-left: auto; padding: 5px 12px; font-size: 0.7rem;">
+                THEME: DARK
+            </button>
+        </nav>
+
+        <header style="margin-bottom: 40px;">
+            <h1 id="deckTitle" style="font-size: 2.5rem; margin: 0; letter-spacing: -1px; color: var(--text-main);">DECK: LOADING...</h1>
+            <p style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.85rem;">[ MANAGE DECK ]</p>
+        </header>
+
+        <div style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: end;">
+                
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono';">SEARCH DATABASE</label>
+                    <input type="text" id="cardSearch" placeholder="Search cards in this deck..." onkeyup="filterView()" style="width: 100%;">
+                </div>
+
+                <button class="btn" onclick="saveChanges()" style="padding: 0 25px; height: 44px;">SAVE CHANGES</button>
+            </div>
+        </div>
+
+        <div class="deck-list-container">
+            <table class="card-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; width: 42%;">SOURCE TEXT</th>
+                        <th style="text-align: left; width: 42%;">TRANSLATION</th>
+                        <th style="text-align: right; width: 16%;">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="cardTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/static/view_deck.js"></script>
+</body>
+</html>

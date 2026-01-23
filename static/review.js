@@ -30,13 +30,29 @@ async function populateDeckDropdown() {
 function renderTable(cards) {
     const tbody = document.getElementById('deckTableBody');
     tbody.innerHTML = '';
+    
     cards.forEach((card, index) => {
-        tbody.innerHTML += `
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 10px;"><input type="text" value="${card.source}" onchange="updateCard(${index}, 'source', this.value)" style="width:100%;"></td>
-                <td style="padding: 10px;"><input type="text" value="${card.translation}" onchange="updateCard(${index}, 'translation', this.value)" style="width:100%;"></td>
-                <td style="padding: 10px;"><button onclick="deleteRow(${index})" style="color:red; cursor:pointer;">✕</button></td>
+        const row = `
+            <tr>
+                <td>
+                    <textarea 
+                        onchange="updateCard(${index}, 'source', this.value)"
+                        rows="2"
+                    >${card.source}</textarea>
+                </td>
+                <td>
+                    <textarea 
+                        onchange="updateCard(${index}, 'translation', this.value)"
+                        rows="2"
+                    >${card.translation}</textarea>
+                </td>
+                <td style="text-align: right;">
+                    <button class="btn-delete" onclick="deleteRow(${index})">
+                        DELETE
+                    </button>
+                </td>
             </tr>`;
+        tbody.innerHTML += row;
     });
 }
 

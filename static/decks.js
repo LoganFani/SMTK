@@ -1,6 +1,4 @@
-
 async function loadDecks() {
-    
     const response = await fetch('/decks/list');
     const data = await response.json();
 
@@ -8,15 +6,19 @@ async function loadDecks() {
     tableBody.innerHTML = '';
 
     data.decks.forEach(deckName => {
-        // Skip sql lite made table (cannot delete)
         if (deckName === "sqlite_sequence") return;
+
+        // Use the card-table classes and the btn-delete class from components.css
         const row = `
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 10px;">${deckName}</td>
-                <td style="padding: 10px; text-align: right;">
-                    <button class="btn btn-manage" 
-                            style="background-color: #ff7675; color: white; border: none;" 
-                            onclick="removeDeck('${deckName}')">Delete</button>
+            <tr>
+                <td>
+                    <a href="/view_deck?name=${encodeURIComponent(deckName)}" class="deck-link">
+                        ${deckName}
+                    </a>
+                </td>
+                <td style="text-align: right;">
+                    <button class="btn-delete" 
+                            onclick="removeDeck('${deckName}')">DELETE</button>
                 </td>
             </tr>`;
         tableBody.innerHTML += row;
@@ -24,7 +26,9 @@ async function loadDecks() {
 }
 
 async function addDeck() {
-    const deckName = document.getElementById('newDeckName').value.trim();
+    const inputField = document.getElementById('newDeckName');
+    const deckName = inputField.value.trim();
+    
     if (!deckName) {
         alert("Please enter a valid deck name.");
         return;
@@ -37,7 +41,7 @@ async function addDeck() {
     });
 
     if (response.ok) {
-        deckName.value = '';
+        inputField.value = ''; // Corrected: clear the actual input element
         await loadDecks();
     } else {
         alert("Failed to create deck.");
@@ -58,5 +62,6 @@ async function removeDeck(deckName) {
         alert("Failed to delete deck.");
     }
 }
-// Load decks on page load
-window.onload = loadDecks;
+
+// Using the same event listener style as your other pages
+document.addEventListener('DOMContentLoaded', loadDecks);

@@ -6,18 +6,21 @@ async function loadModels() {
 
     data.models.forEach(model => {
         const card = document.createElement('div');
-        card.className = 'model-card'; // Add styling for this in style.css
+        card.className = 'model-card'; // Styling handled in components.css
+        
+        const statusClass = model.downloaded ? 'status-installed' : 'status-missing';
+        const statusText = model.downloaded ? '● INSTALLED' : '○ AVAILABLE';
+
         card.innerHTML = `
-            <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong>${model.name}</strong><br>
-                    <small style="color: #666;">${model.path}</small>
-                </div>
-                <div>
-                    ${model.downloaded 
-                        ? '<span style="color: green;">✓ Downloaded</span>' 
-                        : `<button class="btn btn-small" onclick="downloadModel('${model.path}', this)">Download</button>`}
-                </div>
+            <div class="model-info">
+                <span class="status-badge ${statusClass}">${statusText}</span>
+                <h4 style="margin: 10px 0 5px 0; font-size: 1.1rem;">${model.name}</h4>
+                <p style="font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-dim);">${model.path}</p>
+            </div>
+            <div class="model-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                ${model.downloaded 
+                    ? `<button class="btn-delete" onclick="deleteModel('${model.path}')">DELETE</button>` 
+                    : `<button class="btn" style="padding: 5px 15px; font-size: 0.7rem;" onclick="downloadModel('${model.path}', this)">DOWNLOAD</button>`}
             </div>
         `;
         container.appendChild(card);
@@ -41,6 +44,23 @@ async function downloadModel(path, btn) {
         alert("Download failed.");
         btn.textContent = "Download";
         btn.disabled = false;
+    }
+}
+
+
+async function deleteModel(repoId) {
+    if (!confirm(`Are you sure you want to delete the local files for ${repoId}? You will need to re-download them to use this language.`)) {
+        return;
+    }
+
+    const response = await fetch(`/models/delete/${encodeURIComponent(repoId)}`, {
+        method: 'DELETE'
+    });
+
+    if (response.ok) {
+        loadModels(); // Refresh the list
+    } else {
+        alert("Failed to delete model files.");
     }
 }
 

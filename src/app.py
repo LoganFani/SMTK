@@ -3,6 +3,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import time
+import shutil
+
+from database import (
+    get_db_connection, 
+    fetch_all_translations, 
+    edit_translation, 
+    delete_translation
+)
 
 app = FastAPI()
 
@@ -109,6 +117,65 @@ async def delete_deck(deck_name: str):
 # --- END DECKS ---
 
 # --- DECK VIEW --- (view/edit specific deck)
+
+@app.get("/view_deck")
+async def view_deck_page():
+    return FileResponse("../templates/view_deck.html")
+
+@app.get("/decks/get_cards/{deck_name}")
+async def get_deck_cards(deck_name: str):
+    conn = get_db_connection("../decks.db")
+    if conn is None:
+        return {"error": "Database connection failed."}
+    
+    # fetch_all_translations returns list[tuple[int, str, str]] -> (id, source, translation)
+    rows = fetch_all_translations(conn, deck_name)
+    conn.close()
+
+    if rows is None:
+        return []
+
+    # Map tuples to dictionaries so the frontend can use card.source and card.id
+    cards = [
+        {"id": row[0], "source": row[1], "translation": row[2]} 
+        for row in rows
+    ]
+    return cards
+
+@app.post("/decks/update_batch")
+async def update_batch(data: dict):
+    deck_name = data.get("deck")
+    cards = data.get("cards") # Expecting list of {id, source, translation}
+    
+    conn = get_db_connection("../decks.db")
+    if conn is None:
+        return {"error": "Database connection failed."}
+
+    success_count = 0
+    for card in cards:
+        # Uses your database.py edit_translation function
+        success = edit_translation(
+            conn, 
+            deck_name, 
+            card['id'], 
+            card['source'], 
+            card['translation']
+        )
+        if success:
+            success_count += 1
+    
+    conn.close()
+    return {"status": "success", "updated": success_count}
+
+@app.delete("/decks/{deck_name}/cards/{card_id}")
+async def delete_card_from_deck(deck_name: str, card_id: int):
+    conn = get_db_connection("../decks.db")
+    success = delete_translation(conn, deck_name, card_id)
+    conn.close()
+    
+    if success:
+        return {"message": "Card deleted"}
+    return {"error": "Failed to delete card"}, 500
 
 # --- GENERATED CARDS --- (cards to be reviewed/edited before adding to deck)
 @app.get("/review")
@@ -219,5 +286,20 @@ async def get_downloaded_models():
                 })
             
     return {"downloaded_models": downloaded}
+
+@app.delete("/models/delete/{repo_id:path}")
+async def delete_model(repo_id: str):
+    # Convert Repo ID back to folder name
+    # Helsinki-NLP/opus-mt-en-es -> models--Helsinki-NLP--opus-mt-en-es
+    folder_name = f"models--{repo_id.replace('/', '--')}"
+    model_path = os.path.join("../models", folder_name)
+
+    try:
+        if os.path.exists(model_path):
+            shutil.rmtree(model_path)
+            return {"message": f"Deleted {repo_id}"}
+        return {"error": "Model folder not found"}, 404
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 # --- OPTIONAL (Settings, pull transcript from websites)

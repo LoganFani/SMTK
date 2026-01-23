@@ -1,15 +1,35 @@
-<div class="container">
-    <nav class="tabs">
-        <a href="/" class="tab-link">Home</a>
-        <a href="/decks" class="tab-link">Decks</a>
-        <a href="/models" class="tab-link active">Language Models</a>
-    </nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTK | Models</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link">HOME</a>
+            <a href="/decks" class="tab-link">DECKS</a>
+            <a href="/models" class="tab-link active">MODELS</a>
 
-    <h1>Model Management</h1>
-    <p>Models are large (~300MB - 1GB). Download the languages you need below.</p>
+            <button id="themeToggle" class="btn" style="margin-left: auto; padding: 5px 12px; font-size: 0.7rem;">
+                THEME: DARK
+            </button>
+        </nav>
 
-    <div class="model-grid" id="modelList">
-        </div>
-</div>
-<script src="/static/models.js"></script>
-<link rel="stylesheet" href="/static/style.css">
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem; margin: 0; letter-spacing: -1px;">LANGUAGE_MODELS</h1>
+            <p style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.85rem;">[ DOWNLOAD A MARIAN MODEL ]</p>
+        </header>
+
+        <div class="model-grid" id="modelList">
+            </div>
+    </div>
+
+    <script src="/static/models.js"></script>
+</body>
+</html>

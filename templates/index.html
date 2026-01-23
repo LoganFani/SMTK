@@ -3,41 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMTK</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>SMTK | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
 </head>
 <body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link active">HOME</a>
+            <a href="/decks" class="tab-link">DECKS</a>
+            <a href="/models" class="tab-link">MODELS</a>
 
-<div class="container">
-    <nav class="tabs">
-        <a href="/" class="tab-link active">Home</a>
-        <a href="/decks" class="tab-link">Decks</a>
-        <a href="/models" class="tab-link">Language Models</a>
-    </nav>
+            <button id="themeToggle" class="btn" style="margin-left: auto; padding: 2px 10px; font-size: 0.7rem;">
+                THEME: DARK
+            </button>
+        </nav>
 
-    <h1>SMTK</h1>
-    
-    <div class="toolbar">
-        <div class="file-input-wrapper">
-            <button class="btn btn-file">Upload File (.srt, .txt)</button>
-            <input type="file" id="fileUpload" accept=".srt,.txt">
-        </div>
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem; margin: 0; letter-spacing: -1px;">SMTK</h1>
+            <p style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.9rem;">SENTENCE MINING TOOL KIT</p>
+        </header>
 
-        <div class="lang-group">
-            <label for="modelSelect">Translation Model:</label>
-            <select id="modelSelect" style="padding: 8px; border-radius: 6px; width: 100%;">
-            <option value="">Select</option>
-            </select>
-        </div>
+        <main style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px;">
+            <div style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                <span style="color: var(--primary-green); font-family: 'JetBrains Mono'; font-size: 0.75rem;">INPUT</span>
+                <span id="charCount" style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.75rem;">0 chars</span>
+            </div>
+            
+            <textarea id="transcriptInput" rows="25" placeholder="Paste source text for mining..."></textarea>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; margin-top: 20px; align-items: end;">
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 5px;">LANGUAGE MODELS</label>
+                    <select id="modelSelect" style="width: 100%;"></select>
+                </div>
+                <button id="generate-btn" class="btn" onclick="sendData()" style="padding: 10px 25px; height: 42px;">GENERATE</button>
+            </div>
+        </main>
+
+        <footer style="margin-top: 20px; display: flex; justify-content: space-between;">
+            <label for="fileUpload" style="color: var(--text-dim); font-size: 0.75rem; cursor: pointer;">+ UPLOAD FILE (.SRT .TXT)</label>
+            <input type="file" id="fileUpload" style="display: none;">
+        </footer>
     </div>
-
-    <textarea id="transcriptInput" placeholder="Paste your transcript here or upload a file..."></textarea>
-
-    <div class="generate-container">
-        <button id="generate-btn" class="btn" onclick="sendData()">Generate Cards</button>
-    </div>
-</div>
-
     <script src="/static/script.js"></script>
 </body>
 </html>

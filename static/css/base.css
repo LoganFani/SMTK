@@ -1,0 +1,91 @@
+:root {
+    --bg-color: #0d0d0d;
+    --surface-color: #151515;      /* Elevated surface */
+    --primary-green: #dce0ff;      /* Terminal Green */
+    --text-main: #e0e0e0;
+    --text-dim: #666666;
+    --border-color: #252525;
+    --danger: #ff4444;
+}
+
+body.light-mode {
+    --bg-color: #f5f5f5;
+    --surface-color: #ffffff;
+    --primary-green: #141414;
+    --text-main: #1a1a1a;
+    --text-dim: #666666;
+    --border-color: #dddddd;
+    --danger: #d63031;
+}
+
+/* Consolidated Body Styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    min-height: 100vh; /* Ensures the background covers the whole screen */
+}
+
+.container {
+    width: 100%;
+    max-width: 900px; 
+    padding: 40px 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 50px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.tab-link {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.tab-link:hover, .tab-link.active {
+    color: var(--primary-green);
+}
+
+/* Button Component */
+.btn {
+    background: transparent;
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+}
+
+.btn:hover {
+    background: var(--primary-green);
+    color: var(--bg-color);
+}
+
+/* Inputs */
+input, select, textarea {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary-green);
+}

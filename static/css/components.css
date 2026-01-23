@@ -1,0 +1,187 @@
+/* --- GLOBAL UI ELEMENTS --- */
+
+/* Standard Textarea (Used on Home Page) */
+textarea {
+    width: 100%;
+    background: var(--bg-color); /* Changed from #000 to variable */
+    color: var(--text-main);     /* Changed from #00ff41 to variable */
+    border: 1px solid var(--border-color);
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: none;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    background: var(--surface-color);
+}
+
+/* Custom Dropdowns */
+select {
+    background: var(--surface-color); /* Will be #151515 in dark, #ffffff in light */
+    border: 1px solid var(--border-color);
+    color: var(--text-main); /* FIX: This ensures text is white in dark, black in light */
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+select option {
+    background: var(--surface-color);
+    color: var(--text-main);
+}
+
+/* Standard Ghostty Button */
+.btn {
+    background: transparent;
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    padding: 10px 25px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background: var(--primary-green);
+    color: var(--surface-color); 
+}
+
+/* Action Delete Button */
+.btn-delete {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    padding: 5px 15px; /* Consolidated padding */
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background: var(--danger);
+    color: var(--surface-color);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-green);
+}
+
+/* --- TABLE COMPONENTS (Review & View Deck) --- */
+
+.card-table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.card-table th {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 10px;
+}
+
+.card-table tr {
+    background: var(--surface-color);
+}
+
+.card-table td {
+    padding: 15px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-table td:first-child { border-left: 1px solid var(--border-color); border-radius: 4px 0 0 4px; }
+.card-table td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 4px 4px 0; }
+
+/* Inline Table Editors */
+.card-table textarea {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-main);
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    padding: 8px;
+    border-radius: 4px;
+    resize: vertical;
+    transition: all 0.2s;
+}
+
+.card-table textarea:focus {
+    background: #000;
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    outline: none;
+}
+
+
+
+.deck-link {
+    text-decoration: none;
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.deck-link:hover {
+    color: var(--primary-green);
+    text-decoration: underline;
+}
+
+/* --- MODEL MANAGEMENT COMPONENTS --- */
+
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.model-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.model-card:hover {
+    border-color: var(--primary-green);
+    transform: translateY(-2px);
+}
+
+.status-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.status-installed { color: var(--primary-green); }
+.status-missing { color: var(--text-dim); }

@@ -3,53 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMTK - Review Cards</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>SMTK | Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
 </head>
 <body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link">HOME</a>
+            <a href="/decks" class="tab-link">DECKS</a>
+            <a href="/models" class="tab-link">MODELS</a>
 
-<div class="container">
-    <nav class="tabs">
-        <a href="/" class="tab-link">Home</a>
-        <a href="/decks" class="tab-link">Decks</a>
-        <a href="/models" class="tab-link">Language Models</a>
-    </nav>
+            <button id="themeToggle" class="btn" style="margin-left: auto; padding: 5px 12px; font-size: 0.7rem;">
+                THEME: DARK
+            </button>
+        </nav>
 
-    <h1>Review Cards</h1>
-    
-    <div class="toolbar">
-        <div class="lang-group">
-            <label for="searchCards">Search Cards:</label>
-            <input type="text" id="searchCards" placeholder="Search Keywords" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-            
-            <div class="lang-group">
-                <label for="toDeck">Deck:</label>
-                <select id="toDeck">
-                    <option value="default_deck">Select Deck</option>
-                </select>
-                <button class="btn btn-small" onclick="addCardsToDeck()">Add Cards to Deck</button>
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem; margin: 0; letter-spacing: -1px;">REVIEW_CARDS</h1>
+            <p style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.85rem;">[ GENERATED TRANSLATIONS ]</p>
+        </header>
+
+        <div style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 20px; align-items: end;">
+                
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono';">FILTER KEYWORDS</label>
+                    <input type="text" id="searchCards" placeholder="Search cards..." style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono';">TARGET DECK</label>
+                    <select id="toDeck" style="width: 100%;">
+                        <option value="default_deck">Select Deck</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="addCardsToDeck()" style="padding: 0 25px; height: 44px;">SAVE TO DECK</button>
+            </div>
+        </div>
+
+        <div class="deck-list-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--primary-green);">GENERATED OUTPUT</h3>
             </div>
 
+            <table class="card-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; width: 45%;">SOURCE_TEXT</th>
+                        <th style="text-align: left; width: 45%;">TRANSLATION</th>
+                        <th style="text-align: right; width: 10%;">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="deckTableBody">
+                    </tbody>
+            </table>
         </div>
     </div>
-
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-
-    <div class="deck-list-container">
-        <h3>Generated Cards</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <thead>
-                <tr style="text-align: left; border-bottom: 2px solid #eee;">
-                    <th style="padding: 10px;">Source Text</th>
-                    <th style="padding: 10px;">Translation</th>
-                </tr>
-            </thead>
-            <tbody id="deckTableBody">
-                <!-- Deck rows will be added here in decks.js -->
-            </tbody>
-        </table>
-    </div>
-</div>
 
     <script src="/static/review.js"></script>
 </body>
