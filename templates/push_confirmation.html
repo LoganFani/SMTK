@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SMTK | Push to Anki</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link">HOME</a>
+            <a href="/decks" class="tab-link">DECKS</a>
+            <a href="/models" class="tab-link">MODELS</a>
+            <a href="/settings" class="tab-link active">SETTINGS</a>
+            <button id="themeToggle" class="btn" style="margin-left: auto;">THEME: DARK</button>
+        </nav>
+    <div class="container">
+        <header>
+            <h1>CONFIRM ANKI PUSH</h1>
+            <p id="card_count">Preparing 0 cards...</p>
+        </header>
+
+        <div class="settings-content" style="margin-top: 20px;">
+            <div class="form-group">
+                <label>SELECT TARGET DECK</label>
+                <select id="anki_deck_select">
+                    <option value="">-- Loading Decks --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>OR CREATE NEW DECK</label>
+                <input type="text" id="new_deck_name" placeholder="Enter new deck name...">
+            </div>
+
+            <div id="progress_container" style="display: none; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono'; font-size: 0.7rem;">
+                <span>UPLOADING_TO_ANKI...</span>
+                <span id="progress_percent">0%</span>
+            </div>
+                <div style="width: 100%; background: var(--bg-color); height: 10px; border: 1px solid var(--border-color); margin-top: 5px; border-radius: 5px; overflow: hidden;">
+                <div id="progress_bar" style="width: 0%; height: 100%; background: var(--primary-green); transition: width 0.3s ease;"></div>
+                </div>
+            </div>
+
+
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="executePush()">START PUSH</button>
+                <button class="btn" onclick="window.history.back()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+    <script src="/static/push_confirmation.js"></script>
+</body>
+</html>

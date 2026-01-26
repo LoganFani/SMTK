@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SMTK | Settings</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <script src="/static/theme.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="tabs">
+            <a href="/" class="tab-link">HOME</a>
+            <a href="/decks" class="tab-link">DECKS</a>
+            <a href="/models" class="tab-link">MODELS</a>
+            <a href="/settings" class="tab-link active">SETTINGS</a>
+            <button id="themeToggle" class="btn" style="margin-left: auto;">THEME: DARK</button>
+        </nav>
+
+        <header>
+            <h1>SYSTEM SETTINGS</h1>
+        </header>
+
+        <div class="settings-container" style="display: flex; gap: 30px; margin-top: 20px;">
+            <div class="settings-sidebar" style="width: 200px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="tab-btn active" onclick="showTab('general')">GENERAL</button>
+                <button class="tab-btn" onclick="showTab('anki')">ANKI CONNECT</button>
+            </div>
+
+            <div class="settings-content" style="flex-grow: 1; background: var(--surface-color); padding: 30px; border: 1px solid var(--border-color); border-radius: 8px;">
+                
+                <div id="general" class="settings-tab">
+                    <h3>GENERAL CONFIG</h3>
+                    <div class="form-group">
+                        <label>MODEL CACHE DIRECTORY</label>
+                        <input type="text" id="model_dir" placeholder="../models">
+                    </div>
+                    <div class="form-group">
+                        <label>DEFAULT EXPORT NAME</label>
+                        <input type="text" id="default_name" placeholder="SMTK EXPORT">
+                    </div>
+                </div>
+
+                <div id="anki" class="settings-tab" style="display: none;">
+                    <h3>ANKI CONNECT CONFIG</h3>
+                    
+                    <div class="form-group">
+                        <label>ANKI CONNECT URL</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="anki_url" placeholder="http://localhost:8765" style="flex-grow: 1;">
+                            <button class="btn btn-small" onclick="testAnkiConnection()">TEST CONNECTION</button>
+                        </div>
+                        <small id="connection_status" style="margin-top: 5px; font-family: 'JetBrains Mono'; display: block;"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>DEFAULT ANKI DECK</label>
+                        <input type="text" id="anki_deck" placeholder="SMTK_Mining">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>API KEY (OPTIONAL)</label>
+                        <input type="password" id="anki_key" placeholder="None">
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <button class="btn" onclick="saveSettings()">SAVE CHANGES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/settings.js"></script>
+</body>
+</html>

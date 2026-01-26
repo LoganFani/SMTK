@@ -185,3 +185,122 @@ select option {
 
 .status-installed { color: var(--primary-green); }
 .status-missing { color: var(--text-dim); }
+
+
+/* Action Dropdown Container */
+.action-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* The Hidden Menu */
+.action-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    z-index: 100;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    padding: 5px 0;
+}
+
+.action-menu.show {
+    display: block;
+}
+
+/* Menu Buttons */
+.action-menu button {
+    width: 100%;
+    padding: 8px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action-menu button:hover {
+    background: var(--border-color);
+    color: var(--primary-green);
+}
+
+.action-menu .menu-delete {
+    color: var(--danger);
+}
+
+.action-menu .menu-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.menu-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 5px 0;
+}
+
+
+/* MODAL */
+.smtk-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface-color);
+    border: 1px solid var(--primary-green);
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+
+.tab-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 12px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.7rem;
+    color: var(--primary-green);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.form-group input {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+}
+
+#progress_bar {
+    box-shadow: 0 0 10px var(--primary-green);
+}

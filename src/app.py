@@ -1,9 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 import time
 import shutil
+
+import json
+
+from exports import ExportManager
+import io
+
+from settings import get_default_settings
 
 from database import (
     get_db_connection, 
@@ -302,4 +309,75 @@ async def delete_model(repo_id: str):
     except Exception as e:
         return {"error": str(e)}, 500
 
-# --- OPTIONAL (Settings, pull transcript from websites)
+# --- EXPORT OPTIONS ---
+
+# Initialize the manager
+exporter = ExportManager()
+
+from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import StreamingResponse
+import io
+import database  # Assuming your file is named database.py
+
+@app.get("/export")
+async def export_cards(
+    format: str = Query(...), 
+    name: str = Query(...)
+):
+    # 1. Connect to your database (replace 'smtk.db' with your actual db name)
+    conn = database.get_db_connection("../decks.db")
+    if not conn:
+        raise HTTPException(status_code=500, detail="DATABASE_CONNECTION_FAILED")
+
+    try:
+        # 2. Fetch cards using the new dictionary helper
+        cards = database.fetch_all_translations_dict(conn, name)
+        conn.close() # Clean up the connection
+
+        if not cards:
+            raise HTTPException(status_code=404, detail="DECK_EMPTY_OR_NOT_FOUND")
+
+        # 3. Use your existing exporter (switchboard) logic
+        # This part assumes 'exporter' is initialized in your app.py
+        result = exporter.export(cards, name, format)
+        
+        data = result["data"]
+        processed_data = io.BytesIO(data.encode('utf-8') if isinstance(data, str) else data)
+
+        return StreamingResponse(
+            processed_data,
+            media_type=result["mime"],
+            headers={
+                "Content-Disposition": f"attachment; filename={name}.{result['ext']}",
+                "Access-Control-Expose-Headers": "Content-Disposition"
+            }
+        )
+    except Exception as e:
+        if conn: conn.close()
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/push_confirmation")
+async def push_confirmation():
+    return FileResponse("../templates/push_confirmation.html")
+
+
+# --- SETTINGS PAGE ---
+SETTINGS_FILE = "../settings.json"
+
+@app.get("/api/settings")
+async def get_settings():
+    if not os.path.exists(SETTINGS_FILE):
+        return get_default_settings()
+    with open(SETTINGS_FILE, "r") as f:
+        return json.load(f)
+
+@app.post("/api/settings")
+async def save_settings(settings: dict):
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=4)
+    return {"status": "success"}
+
+# Add this route to serve the page
+@app.get("/settings")
+async def settings_page():
+    return FileResponse("../templates/settings.html")

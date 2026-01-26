@@ -15,6 +15,7 @@
             <a href="/" class="tab-link">HOME</a>
             <a href="/decks" class="tab-link">DECKS</a>
             <a href="/models" class="tab-link">MODELS</a>
+            <a href="/settings" class="tab-link">SETTINGS</a>
 
             <button id="themeToggle" class="btn" style="margin-left: auto; padding: 5px 12px; font-size: 0.7rem;">
                 THEME: DARK
@@ -22,7 +23,7 @@
         </nav>
 
         <header style="margin-bottom: 40px;">
-            <h1 style="font-size: 2.5rem; margin: 0; letter-spacing: -1px;">REVIEW_CARDS</h1>
+            <h1 style="font-size: 2.5rem; margin: 0; letter-spacing: -1px;">REVIEW CARDS</h1>
             <p style="color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.85rem;">[ GENERATED TRANSLATIONS ]</p>
         </header>
 
@@ -42,6 +43,13 @@
                 </div>
 
                 <button class="btn" onclick="addCardsToDeck()" style="padding: 0 25px; height: 44px;">SAVE TO DECK</button>
+
+                <div class="export-group" style="display: flex; gap: 10px; border-left: 1px solid var(--border-color); padding-left: 15px;">
+                    <button class="btn btn-small" onclick="handleExport(allCards, 'SMTK_EXPORT', 'csv')">DOWNLOAD CSV</button>
+                    <button class="btn btn-small" onclick="handleExport(allCards, 'SMTK_EXPORT', 'anki_apkg')">DOWNLOAD APKG</button>
+                    <button class="btn btn-primary" onclick="handleExport(allCards, 'SMTK_EXPORT', 'anki_connect')">PUSH TO ANKI</button>
+                </div>
+
             </div>
         </div>
 
@@ -65,5 +73,6 @@
     </div>
 
     <script src="/static/review.js"></script>
+    <script src="/static/exports.js"></script>
 </body>
 </html>

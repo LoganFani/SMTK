@@ -104,3 +104,20 @@ def list_tables(conn:sqlite3.Connection) -> list[str] | None:
     except sqlite3.Error as e:
         print(f"Error listing tables: {e}")
         return None
+
+def fetch_all_translations_dict(conn: sqlite3.Connection, deck_name: str) -> list[dict]:
+    """
+    Fetches all translations and returns them as a list of dictionaries.
+    Format: [{'source': '...', 'translation': '...'}, ...]
+    """
+    try:
+        cursor = conn.cursor()
+        # We wrap the deck name in double quotes to handle spaces/special characters
+        cursor.execute(f'SELECT source, translation FROM "{deck_name}"')
+        rows = cursor.fetchall()
+        
+        # Convert list of tuples to list of dicts
+        return [{"source": row[0], "translation": row[1]} for row in rows]
+    except sqlite3.Error as e:
+        print(f"Error fetching translations as dict: {e}")
+        return []

@@ -1,0 +1,7 @@
+{
+    "model_dir": "../models",
+    "default_name": "SMTK EXPORT",
+    "anki_url": "127.0.0.1:8765",
+    "anki_deck": "SMTK MINING",
+    "anki_key": ""
+}
