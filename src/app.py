@@ -377,6 +377,21 @@ async def save_settings(settings: dict):
         json.dump(settings, f, indent=4)
     return {"status": "success"}
 
+@app.post("/api/settings/reset")
+async def reset_settings():
+    try:
+        # Assuming your settings_manager has a method to restore defaults
+        # Example logic:
+        # default_config = {"model_dir": "../models", "anki_url": "http://localhost:8765", ...}
+        # settings_manager.save(default_config)
+        
+        with open(SETTINGS_FILE, "w") as f:
+            json.dump(get_default_settings(), f, indent=4)
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Add this route to serve the page
 @app.get("/settings")
 async def settings_page():

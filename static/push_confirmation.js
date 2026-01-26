@@ -6,7 +6,7 @@ async function init() {
     const data = sessionStorage.getItem('pending_cards');
     if (!data) { window.location.href = '/'; return; }
     pendingCards = JSON.parse(data);
-    document.getElementById('card_count').innerText = `READY_TO_PUSH: ${pendingCards.length} CARDS`;
+    document.getElementById('card_count').innerText = `READY TO PUSH: ${pendingCards.length} CARDS`;
 
     // 2. Load settings to get Anki URL
     const settingsResp = await fetch('/api/settings');

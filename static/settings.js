@@ -69,4 +69,28 @@ async function testAnkiConnection() {
     }
 }
 
+async function resetDefaults() {
+    if (!confirm("Are you sure you want to revert all settings to factory defaults?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/settings/reset', {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            alert("SETTINGS RESTORED TO DEFAULT");
+            // Reload the fields with the new (default) data
+            await loadSettings();
+            // Clear any old connection status messages
+            document.getElementById('connection_status').innerText = "";
+        } else {
+            alert("FAILED_TO_RESET_SETTINGS");
+        }
+    } catch (e) {
+        console.error("Reset Error:", e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', loadSettings);

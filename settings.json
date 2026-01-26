@@ -1,7 +1,7 @@
 {
     "model_dir": "../models",
-    "default_name": "SMTK EXPORT",
-    "anki_url": "127.0.0.1:8765",
-    "anki_deck": "SMTK MINING",
+    "default_name": "SMTK_CARDS",
+    "anki_url": "http://localhost:8765",
+    "anki_deck": "SMTK_DEFAULT",
     "anki_key": ""
 }
