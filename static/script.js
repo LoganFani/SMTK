@@ -44,6 +44,8 @@ async function sendData() {
     const transcript = document.getElementById('transcriptInput').value;
     const modelId = document.getElementById('modelSelect').value;
 
+    const joinSentences = document.getElementById('join_sentences').checked;
+
     if (!transcript.trim()) {
         alert("Please provide text or upload a file first!");
         return;
@@ -57,7 +59,8 @@ async function sendData() {
 
     const payload = {
         content: transcript,
-        model_id: modelId
+        model_id: modelId,
+        join_sentences: joinSentences
     };
 
     try {

@@ -26,6 +26,7 @@ app.mount("/static", StaticFiles(directory="../static"), name="static")
 class MineReq(BaseModel):
     content: str
     model_id: str
+    join_sentences: bool = False
 
 @app.get("/")
 async def root():
@@ -35,16 +36,18 @@ async def root():
 @app.post("/generate")
 async def generate_translation(request: MineReq):
     from translator import Translator
-    from formats import format_text
+    from formats import format_text, join_sentences
     
     translator = Translator(request.model_id, cache_dir="../models")
     
     input_lines = request.content.splitlines()
     formatted_lines = format_text(input_lines)
+
+    if request.join_sentences:
+        formatted_lines = join_sentences(formatted_lines)
     
     translations = translator.batch_generate_translation(formatted_lines)
     
-    # Just return the data to the frontend, don't save to DB yet
     return {
         "translations": [{"source": t[0], "translation": t[1]} for t in translations]
     }

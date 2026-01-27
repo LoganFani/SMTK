@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  smtk-app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # PERSISTENCE LOGIC:
+      # Host Path : Container Path
+      - ./models:/app/models          # Keeps downloaded models
+      - ./data:/app/data              # Keeps smtk.db and settings
+    environment:
+      - DATABASE_URL=/app/data/smtk.db
+    restart: always
