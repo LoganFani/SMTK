@@ -21,6 +21,8 @@ from database import (
 
 app = FastAPI()
 
+DB_PATH = "../data/decks.db"
+
 app.mount("/static", StaticFiles(directory="../static"), name="static")
 
 class MineReq(BaseModel):
@@ -59,7 +61,7 @@ async def insert_batch(data: dict):
     deck_name = data.get("deck")
     cards = data.get("cards")
     
-    conn = get_db_connection("../decks.db")
+    conn = get_db_connection(DB_PATH)
     create_table(conn, deck_name)
     
     for card in cards:
@@ -82,7 +84,7 @@ async def create_deck(deck: dict):
     if not deck_name:
         return {"error": "Deck name is required."}
 
-    db_connection = get_db_connection("../decks.db")
+    db_connection = get_db_connection(DB_PATH)
     if db_connection is None:
         return {"error": "Database connection failed."}
 
@@ -99,7 +101,7 @@ async def create_deck(deck: dict):
 async def list_decks():
     from database import get_db_connection, list_tables
 
-    connection = get_db_connection("../decks.db")
+    connection = get_db_connection(DB_PATH)
     if connection is None:
         return {"error": "Database connection failed."}
     
@@ -112,7 +114,7 @@ async def list_decks():
 async def delete_deck(deck_name: str):
     from database import get_db_connection, delete_table
 
-    connection = get_db_connection("../decks.db")
+    connection = get_db_connection(DB_PATH)
     if connection is None:
         return {"error": "Database connection failed."}
     
@@ -134,7 +136,7 @@ async def view_deck_page():
 
 @app.get("/decks/get_cards/{deck_name}")
 async def get_deck_cards(deck_name: str):
-    conn = get_db_connection("../decks.db")
+    conn = get_db_connection(DB_PATH)
     if conn is None:
         return {"error": "Database connection failed."}
     
@@ -157,7 +159,7 @@ async def update_batch(data: dict):
     deck_name = data.get("deck")
     cards = data.get("cards") # Expecting list of {id, source, translation}
     
-    conn = get_db_connection("../decks.db")
+    conn = get_db_connection(DB_PATH)
     if conn is None:
         return {"error": "Database connection failed."}
 
@@ -179,7 +181,7 @@ async def update_batch(data: dict):
 
 @app.delete("/decks/{deck_name}/cards/{card_id}")
 async def delete_card_from_deck(deck_name: str, card_id: int):
-    conn = get_db_connection("../decks.db")
+    conn = get_db_connection(DB_PATH)
     success = delete_translation(conn, deck_name, card_id)
     conn.close()
     
@@ -328,7 +330,7 @@ async def export_cards(
     name: str = Query(...)
 ):
     # 1. Connect to your database (replace 'smtk.db' with your actual db name)
-    conn = database.get_db_connection("../decks.db")
+    conn = database.get_db_connection(DB_PATH)
     if not conn:
         raise HTTPException(status_code=500, detail="DATABASE_CONNECTION_FAILED")
 

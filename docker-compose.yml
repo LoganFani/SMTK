@@ -1,15 +1,15 @@
-version: '3.8'
-
 services:
   smtk-app:
     build: .
+    container_name: smtk_miner
     ports:
       - "8000:8000"
     volumes:
-      # PERSISTENCE LOGIC:
-      # Host Path : Container Path
-      - ./models:/app/models          # Keeps downloaded models
-      - ./data:/app/data              # Keeps smtk.db and settings
+      # Data and Models live one level up from src to keep things tidy
+      - ./data:/app/data
+      - ./models:/app/models
     environment:
-      - DATABASE_URL=/app/data/smtk.db
+      # We point these to the absolute paths in the container
+      - DATABASE_PATH=/app/data/decks.db
+      - MODEL_DIR=/app/models
     restart: always
