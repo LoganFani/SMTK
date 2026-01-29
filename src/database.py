@@ -1,6 +1,14 @@
 import sqlite3
+import re
 
 #TODO CHANGE ALL F STRINGS TO SAFE QUERIES
+
+def toSafeName(name:str) -> str:
+    # Replace spaces with underscores
+    safe_name = name.replace(" ", "_")
+    # Remove special characters, keeping only alphanumeric and underscores
+    safe_name = re.sub(r'\W+', '', safe_name)
+    return safe_name
 
 # Start
 def get_db_connection(db_name:str ) -> sqlite3.Connection | None:
@@ -12,10 +20,13 @@ def get_db_connection(db_name:str ) -> sqlite3.Connection | None:
         return None
     
 def create_table (conn:sqlite3.Connection, deck_name:str) -> bool:
+
+    safe_deck_name = toSafeName(deck_name)
+
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS "{deck_name}" (
+            CREATE TABLE IF NOT EXISTS "{safe_deck_name}" (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source TEXT NOT NULL,
                 translation TEXT NOT NULL
@@ -28,10 +39,13 @@ def create_table (conn:sqlite3.Connection, deck_name:str) -> bool:
         return False
 
 def delete_table(conn:sqlite3.Connection, deck_name:str) -> bool:
+
+    safe_deck_name = toSafeName(deck_name)
+    
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            DROP TABLE IF EXISTS "{deck_name}";
+            DROP TABLE IF EXISTS "{safe_deck_name}";
         ''')
         conn.commit()
         return True
@@ -40,10 +54,13 @@ def delete_table(conn:sqlite3.Connection, deck_name:str) -> bool:
         return False
 
 def insert_translation(conn:sqlite3.Connection, deck_name:str, source_text:str, translated_text:str) -> bool:
+    
+    safe_deck_name = toSafeName(deck_name)
+    
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            INSERT INTO "{deck_name}" (source, translation)
+            INSERT INTO "{safe_deck_name}" (source, translation)
             VALUES (?, ?);
         ''', (source_text, translated_text))
         conn.commit()
@@ -54,10 +71,13 @@ def insert_translation(conn:sqlite3.Connection, deck_name:str, source_text:str, 
     
 
 def fetch_all_translations(conn:sqlite3.Connection, deck_name:str) -> list[tuple[int, str, str]] | None:
+
+    safe_deck_name = toSafeName(deck_name)
+    
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            SELECT * FROM "{deck_name}";
+            SELECT * FROM "{safe_deck_name}";
         ''')
         rows = cursor.fetchall()
         return rows
@@ -66,10 +86,13 @@ def fetch_all_translations(conn:sqlite3.Connection, deck_name:str) -> list[tuple
         return None
     
 def delete_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int) -> bool:
+    
+    safe_deck_name = toSafeName(deck_name)
+    
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            DELETE FROM "{deck_name}"
+            DELETE FROM "{safe_deck_name}"
             WHERE id = ?;
         ''', (translation_id,))
         conn.commit()
@@ -79,10 +102,13 @@ def delete_translation(conn:sqlite3.Connection, deck_name:str, translation_id:in
         return False
 
 def edit_translation(conn:sqlite3.Connection, deck_name:str, translation_id:int, new_source:str, new_translation:str) -> bool:
+    
+    safe_deck_name = toSafeName(deck_name)
+    
     try:
         cursor = conn.cursor()
         cursor.execute(f'''
-            UPDATE "{deck_name}"
+            UPDATE "{safe_deck_name}"
             SET source = ?, translation = ?
             WHERE id = ?;
         ''', (new_source, new_translation, translation_id))

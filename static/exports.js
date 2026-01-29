@@ -2,12 +2,15 @@
  * Main switchboard for exports.
  */
 async function handleExport(cards, defaultName, format) {
-    let fileName = prompt("ENTER_FILENAME:", defaultName);
-    if (fileName === null) return;
-    if (fileName.trim() === "") fileName = "SMTK_Export";
-
+    
+    if (format !== 'anki_connect') {
+        let fileName = prompt("ENTER_FILENAME:", defaultName);
+        if (fileName === null) return;
+        if (fileName.trim() === "") fileName = "SMTK_Export";
+    }
+    
     if (format === 'anki_connect') {
-        await pushToAnki(cards, fileName);
+        await pushToAnki(cards);
     } else {
         await downloadFile(cards, fileName, format);
     }
