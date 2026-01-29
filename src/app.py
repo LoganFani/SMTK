@@ -7,12 +7,12 @@ import shutil
 
 import json
 
-from exports import ExportManager
+from src.exports import ExportManager
 import io
 
-from settings import get_default_settings
+from src.settings import get_default_settings
 
-from database import (
+from src.database import (
     get_db_connection, 
     fetch_all_translations, 
     edit_translation, 
@@ -21,9 +21,9 @@ from database import (
 
 app = FastAPI()
 
-DB_PATH = "../data/decks.db"
+DB_PATH = "./data/decks.db"
 
-app.mount("/static", StaticFiles(directory="../static"), name="static")
+app.mount("/static", StaticFiles(directory="./static"), name="static")
 
 class MineReq(BaseModel):
     content: str
@@ -32,15 +32,15 @@ class MineReq(BaseModel):
 
 @app.get("/")
 async def root():
-    return FileResponse("../templates/index.html")
+    return FileResponse("./templates/index.html")
 
 
 @app.post("/generate")
 async def generate_translation(request: MineReq):
-    from translator import Translator
-    from formats import format_text, join_sentences
+    from src.translator import Translator
+    from src.formats import format_text, join_sentences
     
-    translator = Translator(request.model_id, cache_dir="../models")
+    translator = Translator(request.model_id, cache_dir="./models")
     
     input_lines = request.content.splitlines()
     formatted_lines = format_text(input_lines)
@@ -56,7 +56,7 @@ async def generate_translation(request: MineReq):
 
 @app.post("/decks/insert_batch")
 async def insert_batch(data: dict):
-    from database import get_db_connection, create_table, insert_translation
+    from src.database import get_db_connection, create_table, insert_translation
     
     deck_name = data.get("deck")
     cards = data.get("cards")
@@ -73,12 +73,12 @@ async def insert_batch(data: dict):
 # --- DECKS ---
 @app.get("/decks")
 async def decks():
-    return FileResponse("../templates/decks.html")
+    return FileResponse("./templates/decks.html")
 
 
 @app.post("/decks/create")
 async def create_deck(deck: dict):
-    from database import get_db_connection, create_table
+    from src.database import get_db_connection, create_table
 
     deck_name = deck.get("deck_name")
     if not deck_name:
@@ -99,7 +99,7 @@ async def create_deck(deck: dict):
 
 @app.get("/decks/list")
 async def list_decks():
-    from database import get_db_connection, list_tables
+    from src.database import get_db_connection, list_tables
 
     connection = get_db_connection(DB_PATH)
     if connection is None:
@@ -112,7 +112,7 @@ async def list_decks():
 
 @app.delete("/decks/delete/{deck_name}")
 async def delete_deck(deck_name: str):
-    from database import get_db_connection, delete_table
+    from src.database import get_db_connection, delete_table
 
     connection = get_db_connection(DB_PATH)
     if connection is None:
@@ -132,7 +132,7 @@ async def delete_deck(deck_name: str):
 
 @app.get("/view_deck")
 async def view_deck_page():
-    return FileResponse("../templates/view_deck.html")
+    return FileResponse("./templates/view_deck.html")
 
 @app.get("/decks/get_cards/{deck_name}")
 async def get_deck_cards(deck_name: str):
@@ -192,12 +192,12 @@ async def delete_card_from_deck(deck_name: str, card_id: int):
 # --- GENERATED CARDS --- (cards to be reviewed/edited before adding to deck)
 @app.get("/review")
 async def review_cards():
-    return FileResponse("../templates/review.html")
+    return FileResponse("./templates/review.html")
 
 # --- MODELS --- (manage/download translation models)
 @app.get("/models")
 async def models_page():
-    return FileResponse("../templates/models.html")
+    return FileResponse("./templates/models.html")
 import os
 
 @app.get("/models/list")
@@ -226,7 +226,7 @@ async def list_available_models():
     }
     
     # Check what is already in your cache folder
-    model_dir = "../models"
+    model_dir = "./models"
     downloaded = []
     if os.path.exists(model_dir):
         # HuggingFace saves models in a specific format, we check for folder presence
@@ -246,10 +246,11 @@ async def list_available_models():
 
 @app.post("/models/download")
 async def download_model(model: dict):
-    from translator import Translator
+    from src.translator import Translator
+
     model_path = model.get("path")
     try:
-        translator = Translator(lang_model=model_path, cache_dir="../models")
+        translator = Translator(lang_model=model_path, cache_dir="./models")
         translator.generate_translation(["This is a test."])  # Trigger download
         return {"message": "Model downloaded successfully"}
     except Exception as e:
@@ -279,7 +280,7 @@ async def get_downloaded_models():
         "Helsinki-NLP/opus-mt-tl-en": "Tagalog/Filipino to English"
     }
     
-    model_dir = "../models"
+    model_dir = "./models"
     downloaded = []
     
     if os.path.exists(model_dir):
@@ -304,7 +305,7 @@ async def delete_model(repo_id: str):
     # Convert Repo ID back to folder name
     # Helsinki-NLP/opus-mt-en-es -> models--Helsinki-NLP--opus-mt-en-es
     folder_name = f"models--{repo_id.replace('/', '--')}"
-    model_path = os.path.join("../models", folder_name)
+    model_path = os.path.join("./models", folder_name)
 
     try:
         if os.path.exists(model_path):
@@ -322,7 +323,7 @@ exporter = ExportManager()
 from fastapi import APIRouter, Query, HTTPException
 from fastapi.responses import StreamingResponse
 import io
-import database  # Assuming your file is named database.py
+import src.database as db # Assuming your file is named database.py
 
 @app.get("/export")
 async def export_cards(
@@ -330,13 +331,13 @@ async def export_cards(
     name: str = Query(...)
 ):
     # 1. Connect to your database (replace 'smtk.db' with your actual db name)
-    conn = database.get_db_connection(DB_PATH)
+    conn = db.get_db_connection(DB_PATH)
     if not conn:
         raise HTTPException(status_code=500, detail="DATABASE_CONNECTION_FAILED")
 
     try:
         # 2. Fetch cards using the new dictionary helper
-        cards = database.fetch_all_translations_dict(conn, name)
+        cards = db.fetch_all_translations_dict(conn, name)
         conn.close() # Clean up the connection
 
         if not cards:
@@ -363,11 +364,11 @@ async def export_cards(
     
 @app.get("/push_confirmation")
 async def push_confirmation():
-    return FileResponse("../templates/push_confirmation.html")
+    return FileResponse("./templates/push_confirmation.html")
 
 
 # --- SETTINGS PAGE ---
-SETTINGS_FILE = "../settings.json"
+SETTINGS_FILE = "./settings.json"
 
 @app.get("/api/settings")
 async def get_settings():
@@ -385,10 +386,6 @@ async def save_settings(settings: dict):
 @app.post("/api/settings/reset")
 async def reset_settings():
     try:
-        # Assuming your settings_manager has a method to restore defaults
-        # Example logic:
-        # default_config = {"model_dir": "../models", "anki_url": "http://localhost:8765", ...}
-        # settings_manager.save(default_config)
         
         with open(SETTINGS_FILE, "w") as f:
             json.dump(get_default_settings(), f, indent=4)
@@ -400,4 +397,4 @@ async def reset_settings():
 # Add this route to serve the page
 @app.get("/settings")
 async def settings_page():
-    return FileResponse("../templates/settings.html")
+    return FileResponse("./templates/settings.html")
