@@ -1,9 +1,11 @@
 
-![simmy](media/simmy.png)   
+![simmy](media/simmy.png)
+
+^ Meet Simmy!
 
 # SMTK (Sentence Mining Tool Kit)
 
-**Pre-Release**
+**Pre-Release** </br>
 A tool for users to easily translate and mine sentences from transcripts for language learning.
 
 ## Description
@@ -32,29 +34,29 @@ The goal for SMTK (Sentence Mining Tool Kit) is to allow users to easily transla
 
 After Python 3.12 is installed navigate to the SMTK folder.
 ```
-> cd SMTK
+cd SMTK
 ```
 
 It is highly recommended to create an environment file using whichever one you prefer (venv for this example)
 
 ```
-> python3 -m venv env
+python3 -m venv env
 ```
 
 Next install all of the dependencies in the requirements.txt file with pip
 
 ```
-> pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Next navigate to the "src" folder (Refactoring will be done in the future to allow to run from the root directory)
 ```
-> cd src
+cd src
 ```
 
 Finally run the web server with Uvicorn (will be installed with pip in the previous step)
 ```
-> uvicorn app:app <optional args>
+uvicorn app:app <optional args>
 ```
 
 Expected Output
@@ -68,13 +70,13 @@ INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 #### Installing with Docker
 After Docker is installed navigate to the SMTK folder.
 ```
-> cd SMTK
+cd SMTK
 ```
 
 Build and run the container
 
 ```
-> docker-compose up --build 
+docker-compose up --build 
 ```
 
 Expected Output
