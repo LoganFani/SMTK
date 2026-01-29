@@ -94,11 +94,11 @@ You will still have to navigate to 127.0.0.1:8000 in browser.
 
 
 ## Future Goals
-[ ] More language models.
-[ ] Better card customization for Anki.
-[ ] Direct integration with Youtube Videos.
-[ ] More formatting feautres / ease of use.
-[ ] Pulling transcripts from video links.
+- [ ] More language models.
+- [ ] Better card customization for Anki.
+- [ ] Direct integration with Youtube Videos.
+- [ ] More formatting feautres / ease of use.
+- [ ] Pulling transcripts from video links.
 
 ## Authors
 
