@@ -1,7 +1,6 @@
 
 ![simmy](media/simmy.png)
 
-^ Meet Simmy!
 
 # SMTK (Sentence Mining Tool Kit)
 
@@ -23,7 +22,7 @@ The goal for SMTK (Sentence Mining Tool Kit) is to allow users to easily transla
 ## Dependencies
 
 ### Installing Locally
-* Python 3.12.4
+* Python 3.12
 
 ### Installing with Docker
 * Docker
@@ -94,7 +93,12 @@ smtk_miner  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to 
 You will still have to navigate to 127.0.0.1:8000 in browser.
 
 
-
+## Future Goals
+[ ] More language models.
+[ ] Better card customization for Anki.
+[ ] Direct integration with Youtube Videos.
+[ ] More formatting feautres / ease of use.
+[ ] Pulling transcripts from video links.
 
 ## Authors
 
