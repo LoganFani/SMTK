@@ -20,17 +20,17 @@ The goal for SMTK (Sentence Mining Tool Kit) is to allow users to easily transla
 
 ## Getting Started
 
-### Dependencies
+## Dependencies
 
-#### Installing Locally
+### Installing Locally
 * Python 3.12.4
 
-#### Installing with Docker
+### Installing with Docker
 * Docker
 
-### Installing
+## Installing
 
-#### Installing Locally
+### Installing Locally
 
 After Python 3.12 is installed navigate to the SMTK folder.
 ```
@@ -67,7 +67,7 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```
 
-#### Installing with Docker
+### Installing with Docker
 After Docker is installed navigate to the SMTK folder.
 ```
 cd SMTK
