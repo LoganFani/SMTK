@@ -48,14 +48,9 @@ Next install all of the dependencies in the requirements.txt file with pip
 pip install -r requirements.txt
 ```
 
-Next navigate to the "src" folder (Refactoring will be done in the future to allow to run from the root directory)
+Finally run the build.py file to start the system tray application.
 ```
-cd src
-```
-
-Finally run the web server with Uvicorn (will be installed with pip in the previous step)
-```
-uvicorn app:app <optional args>
+python build.py
 ```
 
 Expected Output
@@ -66,7 +61,7 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```
 
-### Installing with Docker (**BROKEN**)
+### Installing with Docker
 After Docker is installed navigate to the SMTK folder.
 ```
 cd SMTK
@@ -78,24 +73,13 @@ Build and run the container
 docker-compose up --build 
 ```
 
-Expected Output
-```
-✔ smtk-smtk-app         Built                                                                                                                                                             0.0s 
- ✔ Container smtk_miner  Recreated                                                                                                                                                         3.6s 
-Attaching to smtk_miner
-smtk_miner  | INFO:     Started server process [1]
-smtk_miner  | INFO:     Waiting for application startup.
-smtk_miner  | INFO:     Application startup complete.
-smtk_miner  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-```
-
 * Note *
 You will still have to navigate to 127.0.0.1:8000 in browser.
 
 
 ## Currently Working on
-- Fixing Docker container.
 - Fixing bugs / errors.
+- Packaging as an application.
 
 ## Future Goals
 - [ ] More language models.

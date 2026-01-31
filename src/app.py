@@ -2,7 +2,8 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
-import time
+import sys
+import os
 import shutil
 
 import json
@@ -19,11 +20,17 @@ from src.database import (
     delete_translation
 )
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    return os.path.join(base_path, relative_path)
+
 app = FastAPI()
 
 DB_PATH = "./data/decks.db"
 
-app.mount("/static", StaticFiles(directory="./static"), name="static")
+# TODO : Use the resource_path fumction for pyinstaller compatibility
+app.mount("/static", StaticFiles(directory=resource_path("static")), name="static")
 
 class MineReq(BaseModel):
     content: str
