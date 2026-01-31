@@ -76,8 +76,9 @@ docker-compose up --build
 * Note *
 You will still have to navigate to 127.0.0.1:8000 in browser.
 
-Installing with Docker Video Tutorial:
-[![Youtube Video]()](https://www.youtube.com/watch?v=a5O-t6E_FVI)
+[![Watch the video](https://img.youtube.com/vi/a5O-t6E_FVI/maxresdefault.jpg)](https://youtu.be/a5O-t6E_FVI)
+
+### [Watch this video on YouTube](https://youtu.be/a5O-t6E_FVI)
 
 ## Currently Working on
 - Fixing bugs / errors.
