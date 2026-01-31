@@ -24,7 +24,7 @@ The goal for SMTK (Sentence Mining Tool Kit) is to allow users to easily transla
 ### Installing Locally
 * Python 3.12
 
-### Installing with Docker (**BROKEN**)
+### Installing with Docker
 * Docker
 
 ## Installing
