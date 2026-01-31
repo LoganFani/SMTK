@@ -1,26 +1,31 @@
+# Use a standard Python image (not alpine, as alpine is harder to debug)
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# 1. Install System Dependencies
+# We need build-essential for compiling, and zlib/jpeg for Pillow
+# We need libx11 for pystray (even if we skip the tray icon later)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libz-dev \
+    libjpeg-dev \
+    libx11-6 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# 2. Upgrade pip (fixes many wheel installation issues)
+RUN pip install --no-cache-dir --upgrade pip
 
-# Copy requirements from root to /app
+# 3. Copy only requirements first to leverage Docker cache
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy everything into /app
+# 4. Copy the rest of the app
 COPY . .
 
-# Move into the src directory for the runtime
-WORKDIR /app/src
+# Set environment variable to skip tray logic in build.py
+ENV DOCKER_BUILD=true
 
 EXPOSE 8000
 
-# Run uvicorn from within the src directory
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "build.py"]
