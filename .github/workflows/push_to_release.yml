@@ -1,0 +1,78 @@
+name: Build and Release SMTK
+
+on:
+  push:
+    tags:
+      - 'v*'   # Trigger on version tags like v1.0.0
+  workflow_dispatch:  # Optional manual trigger
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pystray pillow
+
+      # Build with PyInstaller
+      - name: Build app
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "Windows build uses CMD-style continuation"
+            pyinstaller --name SMTK --icon "media/simmy-icon-windows.ico" --noconfirm --clean --onedir --windowed \
+              --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers \
+              --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece \
+              --collect-all onnxruntime --add-data "media;media" --add-data "static;static" --add-data "templates;templates" \
+              build.py
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            pyinstaller --name SMTK --icon "media/simmy-icon-mac.icns" --noconfirm --clean --onedir --windowed \
+              --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers \
+              --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece \
+              --collect-all onnxruntime --add-data "media:media" --add-data "static:static" --add-data "templates:templates" \
+              build.py
+          else
+            # Linux
+            pyinstaller --name SMTK --icon "media/simmy-icon-linux.png" --noconfirm --clean --onedir --windowed \
+              --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers \
+              --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece \
+              --collect-all onnxruntime --add-data "media:media" --add-data "static:static" --add-data "templates:templates" \
+              build.py
+
+      # Zip the built folder
+      - name: Zip build
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-windows-${GITHUB_REF_NAME}.zip"
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            zip -r "SMTK-macos-${GITHUB_REF_NAME}.zip" dist/SMTK.app
+          else
+            zip -r "SMTK-linux-${GITHUB_REF_NAME}.zip" dist/SMTK
+        shell: bash
+
+      # Upload to GitHub release
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ runner.os }}-${{ github.ref_name }}.zip
+          asset_path: |
+            ${{ runner.os == 'Windows' && 'SMTK-windows-${GITHUB_REF_NAME}.zip' || runner.os == 'macOS' && 'SMTK-macos-${GITHUB_REF_NAME}.zip' || 'SMTK-linux-${GITHUB_REF_NAME}.zip' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
