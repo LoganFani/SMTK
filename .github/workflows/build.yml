@@ -3,8 +3,8 @@ name: Build SMTK
 on:
   push:
     tags:
-      - 'v*'   # Only build on version tags like v1.0.0
-  workflow_dispatch:  # Allow manual triggering
+      - 'v*'   # Build only on version tags like v1.0.0
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   build-mac:
@@ -28,7 +28,7 @@ jobs:
         run: |
           pyinstaller \
             --name SMTK \
-            --icon "media/simmy-icon-mac.icns" \
+            --icon="media/simmy-icon-mac.icns" \
             --noconfirm \
             --clean \
             --onedir \
@@ -47,10 +47,8 @@ jobs:
             --add-data "templates:templates" \
             build.py
 
-      - name: Package artifact
-        run: |
-          zip -r SMTK-mac.zip dist/SMTK.app
-        shell: bash
+      - name: Zip artifact
+        run: zip -r SMTK-mac.zip dist/SMTK.app
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -99,8 +97,7 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: |
-          powershell Compress-Archive -Path dist\SMTK -DestinationPath SMTK-win.zip
+        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath SMTK-win.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -129,7 +126,7 @@ jobs:
         run: |
           pyinstaller \
             --name SMTK \
-            --icon "media/simmy-icon-linux.png" \
+            --icon="media/simmy-icon-linux.png" \
             --noconfirm \
             --clean \
             --onedir \

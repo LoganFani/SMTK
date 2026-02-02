@@ -36,7 +36,7 @@ def app_root() -> Path:
     """
     if is_frozen():
         return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parent.parent
 
 
 # For read only resources
@@ -49,7 +49,7 @@ def resource_path(*relative: str) -> Path:
 
 # For DB
 def db_path(name: str = "decks.db") -> Path:
-    return exe_dir().joinpath(name)
+    return resource_path(name)
 
 def exe_dir() -> Path:
     """Return the folder where the executable lives (or script in dev)."""

@@ -1,5 +1,5 @@
 
-
+'''Terrible way to do this change later (seperate config files)'''
 from src.files import db_path
 DB_PATH = str(db_path())
 
