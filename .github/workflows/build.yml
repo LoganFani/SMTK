@@ -3,20 +3,36 @@ name: Build and Release SMTK
 on:
   push:
     tags:
-      - 'v*'   # Trigger on version tags like v1.0.0
-  workflow_dispatch:  # Manual trigger
+      - 'v*'  # Triggers on tags like v1.0.0
+  workflow_dispatch: # Allows manual trigger
+
+permissions:
+  contents: write # CRITICAL: Fixes the 403 error
 
 jobs:
-  build-macos:
-    name: Build macOS
-    runs-on: macos-latest
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: macos
+            binary_path: dist/SMTK.app
+          - os: windows-latest
+            platform: windows
+            binary_path: dist/SMTK
+          - os: ubuntu-latest
+            platform: linux
+            binary_path: dist/SMTK
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -24,125 +40,49 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller pystray pillow
 
-      - name: Build app
+      - name: Build with PyInstaller
+        shell: bash
         run: |
-          pyinstaller \
-            --name SMTK \
-            --icon "media/simmy-icon-mac.icns" \
-            --noconfirm \
-            --clean \
-            --onedir \
-            --windowed \
-            --collect-all fastapi \
-            --collect-all genanki \
-            --collect-all uvicorn \
-            --collect-all transformers \
-            --collect-all pillow \
-            --collect-all pystray \
-            --collect-all requests \
-            --collect-all sentencepiece \
-            --collect-all onnxruntime \
-            --add-data "media:media" \
-            --add-data "static:static" \
-            --add-data "templates:templates" \
+          # Detect separator for --add-data based on OS
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then SEP=";"; else SEP=":"; fi
+          
+          pyinstaller --name SMTK \
+            --noconfirm --clean --onedir --windowed \
+            --collect-all fastapi --collect-all uvicorn --collect-all transformers \
+            --add-data "media${SEP}media" \
+            --add-data "static${SEP}static" \
+            --add-data "templates${SEP}templates" \
             build.py
 
-      - name: Zip artifact
-        run: zip -r "SMTK-macos-${{ github.ref_name }}.zip" dist/SMTK.app
-
-      - name: Upload release asset
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: "SMTK-macos-${{ github.ref_name }}.zip"
-          files: "SMTK-macos-${{ github.ref_name }}.zip"
-          draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller pystray pillow
-
-      - name: Build exe
-        shell: cmd
-        run: pyinstaller --name SMTK --icon "media/simmy-icon-windows.ico" --noconfirm --clean --onedir --windowed --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece --collect-all onnxruntime --add-data "media;media" --add-data "static;static" --add-data "templates;templates" build.py
-
-      - name: Zip artifact
+      - name: Compress (Windows)
+        if: matrix.os == 'windows-latest'
         shell: pwsh
-        run: Compress-Archive -Path dist/SMTK -DestinationPath "SMTK-windows-${{ github.ref_name }}.zip"
-      - name: Upload release asset
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: "SMTK-windows-${{ github.ref_name }}.zip"
-          files: "SMTK-windows-${{ github.ref_name }}.zip"
-          draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: Compress-Archive -Path dist/SMTK -DestinationPath "SMTK-windows.zip"
 
-  build-linux:
-    name: Build Linux
+      - name: Compress (macOS/Linux)
+        if: matrix.os != 'windows-latest'
+        run: zip -r "SMTK-${{ matrix.platform }}.zip" ${{ matrix.binary_path }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SMTK-${{ matrix.platform }}
+          path: "*.zip"
+
+  release:
+    needs: build
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          python-version: 3.12
+          path: ./release-assets
+          merge-multiple: true
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller pystray pillow
-
-      - name: Build app
-        run: |
-          pyinstaller \
-            --name SMTK \
-            --icon "media/simmy-icon-linux.png" \
-            --noconfirm \
-            --clean \
-            --onedir \
-            --windowed \
-            --collect-all fastapi \
-            --collect-all genanki \
-            --collect-all uvicorn \
-            --collect-all transformers \
-            --collect-all pillow \
-            --collect-all pystray \
-            --collect-all requests \
-            --collect-all sentencepiece \
-            --collect-all onnxruntime \
-            --add-data "media:media" \
-            --add-data "static:static" \
-            --add-data "templates:templates" \
-            build.py
-
-      - name: Zip artifact
-        run: zip -r "SMTK-macos-${{ github.ref_name }}.zip" dist/SMTK.app
-
-      - name: Upload release asset
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: "SMTK-linux-${{ github.ref_name }}.zip"
-          files: "SMTK-macos-${{ github.ref_name }}.zip"
-          draft: true
+          files: ./release-assets/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
