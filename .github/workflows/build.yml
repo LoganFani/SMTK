@@ -74,27 +74,8 @@ jobs:
           pip install pyinstaller pystray pillow
 
       - name: Build exe
-        run: |
-          pyinstaller ^
-            --name SMTK ^
-            --icon "media/simmy-icon-windows.ico" ^
-            --noconfirm ^
-            --clean ^
-            --onedir ^
-            --windowed ^
-            --collect-all fastapi ^
-            --collect-all genanki ^
-            --collect-all uvicorn ^
-            --collect-all transformers ^
-            --collect-all pillow ^
-            --collect-all pystray ^
-            --collect-all requests ^
-            --collect-all sentencepiece ^
-            --collect-all onnxruntime ^
-            --add-data "media;media" ^
-            --add-data "static;static" ^
-            --add-data "templates;templates" ^
-            build.py
+        run: pyinstaller --name SMTK --icon "media/simmy-icon-windows.ico" --noconfirm --clean --onedir --windowed --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece --collect-all onnxruntime --add-data "media;media" --add-data "static;static" --add-data "templates;templates" build.py
+       
 
       - name: Zip artifact
         run: powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-win-${GITHUB_REF_NAME}.zip"
