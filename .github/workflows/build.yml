@@ -48,13 +48,13 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: zip -r SMTK-mac.zip dist/SMTK.app
+        run: zip -r "SMTK-mac-${GITHUB_REF_NAME}.zip" dist/SMTK.app
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: SMTK-mac
-          path: SMTK-mac.zip
+          name: SMTK-mac-${GITHUB_REF_NAME}
+          path: "SMTK-mac-${GITHUB_REF_NAME}.zip"
 
   build-windows:
     name: Build Windows
@@ -97,13 +97,13 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath SMTK-win.zip
+        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-win-${GITHUB_REF_NAME}.zip"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: SMTK-win
-          path: SMTK-win.zip
+          name: SMTK-win-${GITHUB_REF_NAME}
+          path: "SMTK-win-${GITHUB_REF_NAME}.zip"
 
   build-linux:
     name: Build Linux
@@ -146,10 +146,10 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: zip -r SMTK-linux.zip dist/SMTK
+        run: zip -r "SMTK-linux-${GITHUB_REF_NAME}.zip" dist/SMTK
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: SMTK-linux
-          path: SMTK-linux.zip
+          name: SMTK-linux-${GITHUB_REF_NAME}
+          path: "SMTK-linux-${GITHUB_REF_NAME}.zip"
