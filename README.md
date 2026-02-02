@@ -85,6 +85,7 @@ You will still have to navigate to 127.0.0.1:8000 in browser.
 - Packaging as an application.
 
 ## Future Goals
+- [ ] Move away from transformers library to reduce bloat and increase performance speed.
 - [ ] More language models.
 - [ ] Better card customization for Anki.
 - [ ] Direct integration with Youtube Videos.
