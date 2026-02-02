@@ -1,13 +1,13 @@
-name: Build SMTK
+name: Build and Release SMTK
 
 on:
   push:
     tags:
-      - 'v*'   # Build only on version tags like v1.0.0
+      - 'v*'   # Trigger on version tags like v1.0.0
   workflow_dispatch:  # Manual trigger
 
 jobs:
-  build-mac:
+  build-macos:
     name: Build macOS
     runs-on: macos-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
         run: |
           pyinstaller \
             --name SMTK \
-            --icon="media/simmy-icon-mac.icns" \
+            --icon "media/simmy-icon-mac.icns" \
             --noconfirm \
             --clean \
             --onedir \
@@ -48,13 +48,16 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: zip -r "SMTK-mac-${GITHUB_REF_NAME}.zip" dist/SMTK.app
+        run: zip -r "SMTK-macos-${GITHUB_REF_NAME}.zip" dist/SMTK.app
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
         with:
-          name: SMTK-mac-${GITHUB_REF_NAME}
-          path: "SMTK-mac-${GITHUB_REF_NAME}.zip"
+          tag_name: ${{ github.ref_name }}
+          name: "SMTK-macos-${{ github.ref_name }}.zip"
+          asset_path: "SMTK-macos-${GITHUB_REF_NAME}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-windows:
     name: Build Windows
@@ -97,13 +100,17 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-win-${GITHUB_REF_NAME}.zip"
+        shell: cmd
+        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-windows-${GITHUB_REF_NAME}.zip"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
         with:
-          name: SMTK-win-${GITHUB_REF_NAME}
-          path: "SMTK-win-${GITHUB_REF_NAME}.zip"
+          tag_name: ${{ github.ref_name }}
+          name: "SMTK-windows-${{ github.ref_name }}.zip"
+          asset_path: "SMTK-windows-${GITHUB_REF_NAME}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-linux:
     name: Build Linux
@@ -126,7 +133,7 @@ jobs:
         run: |
           pyinstaller \
             --name SMTK \
-            --icon="media/simmy-icon-linux.png" \
+            --icon "media/simmy-icon-linux.png" \
             --noconfirm \
             --clean \
             --onedir \
@@ -148,8 +155,11 @@ jobs:
       - name: Zip artifact
         run: zip -r "SMTK-linux-${GITHUB_REF_NAME}.zip" dist/SMTK
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
         with:
-          name: SMTK-linux-${GITHUB_REF_NAME}
-          path: "SMTK-linux-${GITHUB_REF_NAME}.zip"
+          tag_name: ${{ github.ref_name }}
+          name: "SMTK-linux-${{ github.ref_name }}.zip"
+          asset_path: "SMTK-linux-${GITHUB_REF_NAME}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
