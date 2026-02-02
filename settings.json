@@ -1,5 +1,5 @@
 {
-    "model_dir": "./models",
+    "model_dir": "",
     "default_name": "SMTK_CARDS",
     "anki_url": "http://localhost:8765",
     "anki_deck": "SMTK_DEFAULT",

@@ -1,0 +1,158 @@
+name: Build SMTK
+
+on:
+  push:
+    tags:
+      - 'v*'   # Only build on version tags like v1.0.0
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-mac:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pystray pillow
+
+      - name: Build app
+        run: |
+          pyinstaller \
+            --name SMTK \
+            --icon "media/simmy-icon-mac.icns" \
+            --noconfirm \
+            --clean \
+            --onedir \
+            --windowed \
+            --collect-all fastapi \
+            --collect-all genanki \
+            --collect-all uvicorn \
+            --collect-all transformers \
+            --collect-all pillow \
+            --collect-all pystray \
+            --collect-all requests \
+            --collect-all sentencepiece \
+            --collect-all onnxruntime \
+            --add-data "media:media" \
+            --add-data "static:static" \
+            --add-data "templates:templates" \
+            build.py
+
+      - name: Package artifact
+        run: |
+          zip -r SMTK-mac.zip dist/SMTK.app
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SMTK-mac
+          path: SMTK-mac.zip
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pystray pillow
+
+      - name: Build exe
+        run: |
+          pyinstaller ^
+            --name SMTK ^
+            --icon "media/simmy-icon-windows.ico" ^
+            --noconfirm ^
+            --clean ^
+            --onedir ^
+            --windowed ^
+            --collect-all fastapi ^
+            --collect-all genanki ^
+            --collect-all uvicorn ^
+            --collect-all transformers ^
+            --collect-all pillow ^
+            --collect-all pystray ^
+            --collect-all requests ^
+            --collect-all sentencepiece ^
+            --collect-all onnxruntime ^
+            --add-data "media;media" ^
+            --add-data "static;static" ^
+            --add-data "templates;templates" ^
+            build.py
+
+      - name: Zip artifact
+        run: |
+          powershell Compress-Archive -Path dist\SMTK -DestinationPath SMTK-win.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SMTK-win
+          path: SMTK-win.zip
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pystray pillow
+
+      - name: Build app
+        run: |
+          pyinstaller \
+            --name SMTK \
+            --icon "media/simmy-icon-linux.png" \
+            --noconfirm \
+            --clean \
+            --onedir \
+            --windowed \
+            --collect-all fastapi \
+            --collect-all genanki \
+            --collect-all uvicorn \
+            --collect-all transformers \
+            --collect-all pillow \
+            --collect-all pystray \
+            --collect-all requests \
+            --collect-all sentencepiece \
+            --collect-all onnxruntime \
+            --add-data "media:media" \
+            --add-data "static:static" \
+            --add-data "templates:templates" \
+            build.py
+
+      - name: Zip artifact
+        run: zip -r SMTK-linux.zip dist/SMTK
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SMTK-linux
+          path: SMTK-linux.zip

@@ -1,0 +1,24 @@
+pyinstaller --icon="/Users/loganfani/Desktop/SMTK/media/simmy-icon-mac.icns" --noconfirm --onedir --windowed --collect-all "fastapi" --collect-all "genanki" --collect-all "uvicorn" --collect-all "transformers" --collect-all "pillow" --collect-all "pystray" --collect-all "requests" --collect-all "sentencepiece" --collect-all "onnxruntime" --add-data "/Users/loganfani/Desktop/SMTK/media:media/" --add-data "/Users/loganfani/Desktop/SMTK/src:src/" --add-data "/Users/loganfani/Desktop/SMTK/static:static/" --add-data "/Users/loganfani/Desktop/SMTK/templates:templates/" "/Users/loganfani/Desktop/SMTK/build.py"
+
+
+pyinstaller \
+  --name SMTK \
+  --icon="/Users/loganfani/Desktop/SMTK/media/simmy-icon-mac.icns" \
+  --noconfirm \
+  --clean \
+  --onedir \
+  --windowed \
+  --collect-all fastapi \
+  --collect-all genanki \
+  --collect-all uvicorn \
+  --collect-all transformers \
+  --collect-all pillow \
+  --collect-all pystray \
+  --collect-all requests \
+  --collect-all sentencepiece \
+  --collect-all onnxruntime \
+  --add-data "/Users/loganfani/Desktop/SMTK/media:media" \
+  --add-data "/Users/loganfani/Desktop/SMTK/static:static" \
+  --add-data "/Users/loganfani/Desktop/SMTK/templates:templates" \
+  --add-data "/Users/loganfani/Desktop/SMTK/static:static/" \
+  /Users/loganfani/Desktop/SMTK/build.py

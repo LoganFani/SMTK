@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 
 class TempDirHandler:
     def __init__(self, dir_name = ".tmp"):
@@ -18,3 +20,41 @@ class TempDirHandler:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
             os.rmdir(self.dir_name)
+
+    
+# ONE DIR PYINSTALLER
+def is_frozen() -> bool:
+    return getattr(sys, "frozen", False)
+
+
+def app_root() -> Path:
+    """
+    Root directory for bundled app resources.
+    - dev: project root
+    - onedir: SMTK.app/Contents/MacOS
+    - onefile: _MEIPASS (temp extract dir)
+    """
+    if is_frozen():
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
+    return Path(__file__).resolve().parents[2]
+
+
+# For read only resources
+def resource_path(*relative: str) -> Path:
+    """
+    Read-only bundled resources (templates, static, media, db).
+    """
+    return app_root().joinpath(*relative)
+
+
+# For DB
+def db_path(name: str = "decks.db") -> Path:
+    return exe_dir().joinpath(name)
+
+def exe_dir() -> Path:
+    """Return the folder where the executable lives (or script in dev)."""
+    if getattr(sys, "frozen", False):
+        # Onedir / onefile: location of the binary
+        return Path(sys.executable).parent
+    # Dev mode
+    return Path(__file__).resolve().parent
