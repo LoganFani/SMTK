@@ -55,7 +55,8 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-macos-${{ github.ref_name }}.zip"
-          asset_path: "SMTK-macos-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-macos-${GITHUB_REF_NAME}.zip"
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -77,8 +78,8 @@ jobs:
           pip install pyinstaller pystray pillow
 
       - name: Build exe
+        shell: cmd
         run: pyinstaller --name SMTK --icon "media/simmy-icon-windows.ico" --noconfirm --clean --onedir --windowed --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece --collect-all onnxruntime --add-data "media;media" --add-data "static;static" --add-data "templates;templates" build.py
-       
 
       - name: Zip artifact
         shell: cmd
@@ -89,7 +90,8 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-windows-${{ github.ref_name }}.zip"
-          asset_path: "SMTK-windows-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-windows-${GITHUB_REF_NAME}.zip"
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -141,6 +143,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-linux-${{ github.ref_name }}.zip"
-          asset_path: "SMTK-linux-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-linux-${GITHUB_REF_NAME}.zip"
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
