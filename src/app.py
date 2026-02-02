@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
+from src.files import resource_path, db_path
 import sys
 import os
 import shutil
@@ -20,14 +21,11 @@ from src.database import (
     delete_translation
 )
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-    return os.path.join(base_path, relative_path)
-
 app = FastAPI()
 
-DB_PATH = "./data/decks.db"
+DB_PATH = db_path()
+MODELS_PATH = resource_path("models")
+SETTINGS_PATH = resource_path("settings.json")
 
 # TODO : Use the resource_path fumction for pyinstaller compatibility
 app.mount("/static", StaticFiles(directory=resource_path("static")), name="static")
@@ -39,7 +37,7 @@ class MineReq(BaseModel):
 
 @app.get("/")
 async def root():
-    return FileResponse("./templates/index.html")
+    return FileResponse(resource_path("templates", "index.html"))
 
 
 @app.post("/generate")
@@ -47,7 +45,7 @@ async def generate_translation(request: MineReq):
     from src.translator import Translator
     from src.formats import format_text, join_sentences
     
-    translator = Translator(request.model_id, cache_dir="./models")
+    translator = Translator(request.model_id, cache_dir=MODELS_PATH)
     
     input_lines = request.content.splitlines()
     formatted_lines = format_text(input_lines)
@@ -80,7 +78,7 @@ async def insert_batch(data: dict):
 # --- DECKS ---
 @app.get("/decks")
 async def decks():
-    return FileResponse("./templates/decks.html")
+    return FileResponse(resource_path("templates", "decks.html"))
 
 
 @app.post("/decks/create")
@@ -139,7 +137,7 @@ async def delete_deck(deck_name: str):
 
 @app.get("/view_deck")
 async def view_deck_page():
-    return FileResponse("./templates/view_deck.html")
+    return FileResponse(resource_path("templates", "view_deck.html"))
 
 @app.get("/decks/get_cards/{deck_name}")
 async def get_deck_cards(deck_name: str):
@@ -199,12 +197,12 @@ async def delete_card_from_deck(deck_name: str, card_id: int):
 # --- GENERATED CARDS --- (cards to be reviewed/edited before adding to deck)
 @app.get("/review")
 async def review_cards():
-    return FileResponse("./templates/review.html")
+    return FileResponse(resource_path("templates", "review.html"))
 
 # --- MODELS --- (manage/download translation models)
 @app.get("/models")
 async def models_page():
-    return FileResponse("./templates/models.html")
+    return FileResponse(resource_path("templates", "models.html"))
 import os
 
 @app.get("/models/list")
@@ -233,11 +231,10 @@ async def list_available_models():
     }
     
     # Check what is already in your cache folder
-    model_dir = "./models"
     downloaded = []
-    if os.path.exists(model_dir):
+    if os.path.exists(MODELS_PATH):
         # HuggingFace saves models in a specific format, we check for folder presence
-        downloaded = os.listdir(model_dir)
+        downloaded = os.listdir(MODELS_PATH)
 
     status_list = []
     for path, name in available.items():
@@ -257,7 +254,7 @@ async def download_model(model: dict):
 
     model_path = model.get("path")
     try:
-        translator = Translator(lang_model=model_path, cache_dir="./models")
+        translator = Translator(lang_model=model_path, cache_dir=MODELS_PATH)
         translator.generate_translation(["This is a test."])  # Trigger download
         return {"message": "Model downloaded successfully"}
     except Exception as e:
@@ -287,11 +284,10 @@ async def get_downloaded_models():
         "Helsinki-NLP/opus-mt-tl-en": "Tagalog/Filipino to English"
     }
     
-    model_dir = "./models"
     downloaded = []
     
-    if os.path.exists(model_dir):
-        for folder in os.listdir(model_dir):
+    if os.path.exists(MODELS_PATH):
+        for folder in os.listdir(MODELS_PATH):
             if folder.startswith("models--"):
                 # STEP A: Convert folder name to repo_id format
                 # models--Helsinki-NLP--opus-mt-en-es -> Helsinki-NLP/opus-mt-en-es
@@ -312,11 +308,11 @@ async def delete_model(repo_id: str):
     # Convert Repo ID back to folder name
     # Helsinki-NLP/opus-mt-en-es -> models--Helsinki-NLP--opus-mt-en-es
     folder_name = f"models--{repo_id.replace('/', '--')}"
-    model_path = os.path.join("./models", folder_name)
+    lang_model_path = os.path.join(MODELS_PATH, folder_name)
 
     try:
-        if os.path.exists(model_path):
-            shutil.rmtree(model_path)
+        if os.path.exists(lang_model_path):
+            shutil.rmtree(lang_model_path)
             return {"message": f"Deleted {repo_id}"}
         return {"error": "Model folder not found"}, 404
     except Exception as e:
@@ -371,22 +367,21 @@ async def export_cards(
     
 @app.get("/push_confirmation")
 async def push_confirmation():
-    return FileResponse("./templates/push_confirmation.html")
+    return FileResponse(resource_path("templates", "push_confirmation.html"))
 
 
-# --- SETTINGS PAGE ---
-SETTINGS_FILE = "./settings.json"
+
 
 @app.get("/api/settings")
 async def get_settings():
-    if not os.path.exists(SETTINGS_FILE):
+    if not os.path.exists(SETTINGS_PATH):
         return get_default_settings()
-    with open(SETTINGS_FILE, "r") as f:
+    with open(SETTINGS_PATH, "r") as f:
         return json.load(f)
 
 @app.post("/api/settings")
 async def save_settings(settings: dict):
-    with open(SETTINGS_FILE, "w") as f:
+    with open(SETTINGS_PATH, "w") as f:
         json.dump(settings, f, indent=4)
     return {"status": "success"}
 
@@ -394,7 +389,7 @@ async def save_settings(settings: dict):
 async def reset_settings():
     try:
         
-        with open(SETTINGS_FILE, "w") as f:
+        with open(SETTINGS_PATH, "w") as f:
             json.dump(get_default_settings(), f, indent=4)
         return {"status": "success"}
     except Exception as e:
@@ -404,4 +399,4 @@ async def reset_settings():
 # Add this route to serve the page
 @app.get("/settings")
 async def settings_page():
-    return FileResponse("./templates/settings.html")
+    return FileResponse(resource_path("templates", "settings.html"))
