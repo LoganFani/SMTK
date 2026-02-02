@@ -48,14 +48,14 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: zip -r "SMTK-macos-${GITHUB_REF_NAME}.zip" dist/SMTK.app
+        run: zip -r "SMTK-macos-${{ github.ref_name }}.zip" dist/SMTK.app
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-macos-${{ github.ref_name }}.zip"
-          files: "SMTK-macos-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-macos-${{ github.ref_name }}.zip"
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,15 +82,14 @@ jobs:
         run: pyinstaller --name SMTK --icon "media/simmy-icon-windows.ico" --noconfirm --clean --onedir --windowed --collect-all fastapi --collect-all genanki --collect-all uvicorn --collect-all transformers --collect-all pillow --collect-all pystray --collect-all requests --collect-all sentencepiece --collect-all onnxruntime --add-data "media;media" --add-data "static;static" --add-data "templates;templates" build.py
 
       - name: Zip artifact
-        shell: cmd
-        run: powershell Compress-Archive -Path dist\SMTK -DestinationPath "SMTK-windows-${GITHUB_REF_NAME}.zip"
-
+        shell: pwsh
+        run: Compress-Archive -Path dist/SMTK -DestinationPath "SMTK-windows-${{ github.ref_name }}.zip"
       - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-windows-${{ github.ref_name }}.zip"
-          files: "SMTK-windows-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-windows-${{ github.ref_name }}.zip"
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -136,14 +135,14 @@ jobs:
             build.py
 
       - name: Zip artifact
-        run: zip -r "SMTK-linux-${GITHUB_REF_NAME}.zip" dist/SMTK
+        run: zip -r "SMTK-macos-${{ github.ref_name }}.zip" dist/SMTK.app
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "SMTK-linux-${{ github.ref_name }}.zip"
-          files: "SMTK-linux-${GITHUB_REF_NAME}.zip"
+          files: "SMTK-macos-${{ github.ref_name }}.zip"
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
